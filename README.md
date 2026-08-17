@@ -114,3 +114,24 @@ Bundled Lambda rather than a container, because the build machine had no Docker,
 ## Licence
 
 MIT. See [LICENSE](./LICENSE).
+
+## Secret scanning
+
+```bash
+pnpm secrets:scan
+```
+
+Reads every commit, not just the working tree, and exits non-zero if it finds a
+credential. Run it before publishing.
+
+It exists because the check that ran before this repository was first published
+tested **filenames** rather than **file contents**. It correctly excluded `.env`,
+`access-code.txt`, `signing-secret.txt` and the editor's MCP config — and then
+committed a live database URL hardcoded inside a deploy script, plus a live API key
+sitting commented-out in `.env.example`, a file whose entire purpose is to be
+shared. Commenting a credential out does not hide it, and an allowlist of filenames
+cannot tell you what is inside a file.
+
+The scanner distinguishes real credentials from the placeholders this codebase
+legitimately contains — `postgres://` appears in validation code, test fixtures and
+usage examples — because a scanner that cries wolf gets ignored within a day.

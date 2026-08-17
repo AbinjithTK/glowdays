@@ -10,7 +10,8 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
-    "dev:api": "pnpm --filter @glowdays/api dev"
+    "dev:api": "pnpm --filter @glowdays/api dev",
+    "secrets:scan": "node scripts/scan-secrets.mjs"
   },
   "devDependencies": {
     "esbuild": "0.24.2",

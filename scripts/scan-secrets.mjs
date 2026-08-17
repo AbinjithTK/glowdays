@@ -40,6 +40,43 @@ function mask(value) {
   return `${flat.slice(0, 10)}…***…${flat.slice(-4)} (${flat.length} chars)`;
 }
 
+/**
+ * Markers that identify a match as documentation rather than a credential.
+ *
+ * Needed because this codebase legitimately contains the string `postgres://` in
+ * validation code, in test fixtures, in a placeholder in .env.example and in usage
+ * examples in two scripts and the README. A scanner that cannot tell those from a
+ * real URL gets ignored within a day, and an ignored scanner is worse than none.
+ */
+const PLACEHOLDER_MARKERS = [
+  'user:password@',
+  '://...',
+  'localhost',
+  '127.0.0.1',
+  'unused',
+  'your-key-here',
+  'example.com',
+  '<',
+];
+
+function isPlaceholder(value) {
+  const lower = value.toLowerCase();
+  return PLACEHOLDER_MARKERS.some((m) => lower.includes(m)) || lower.length < 24;
+}
+
+/**
+ * Whether a finding should fail the build.
+ *
+ * The prefixed patterns are unambiguous - nothing legitimately contains an `npg_`
+ * password or an `AKIA` key id. A connection string is judged on whether it looks
+ * like it carries a real host and password.
+ */
+function isCritical(name, value) {
+  if (name === 'postgres connection string') return !isPlaceholder(value);
+  if (name === 'sk- api key') return !isPlaceholder(value);
+  return true;
+}
+
 function git(args) {
   return execFileSync('git', args, { encoding: 'utf8', maxBuffer: 200 * 1024 * 1024 });
 }
@@ -82,12 +119,16 @@ for (const line of history.split('\n')) {
   }
 }
 
+let critical = 0;
+
 log('=== SECRETS FOUND IN GIT HISTORY ===');
 if (findings.size === 0) {
   log('none');
 } else {
   for (const entry of findings.values()) {
-    log(`[${entry.name}]`);
+    const bad = isCritical(entry.name, entry.sample);
+    if (bad) critical += 1;
+    log(`${bad ? 'CRITICAL' : 'ok      '} [${entry.name}]`);
     log(`  file:    ${entry.file}`);
     log(`  commits: ${[...entry.commits].join(', ')}`);
     log(`  value:   ${mask(entry.sample)}`);
@@ -109,11 +150,27 @@ for (const path of tracked) {
   }
   for (const { name, re } of PATTERNS) {
     for (const match of text.matchAll(re)) {
-      liveHits += 1;
-      log(`${path}  [${name}]  ${mask(match[0])}`);
+      const bad = isCritical(name, match[0]);
+      if (bad) {
+        critical += 1;
+        liveHits += 1;
+      }
+      log(`${bad ? 'CRITICAL' : 'ok      '} ${path}  [${name}]  ${mask(match[0])}`);
     }
   }
 }
-if (liveHits === 0) log('none');
+if (liveHits === 0) log('(nothing critical)');
 
+log('');
+if (critical > 0) {
+  log(`FAILED: ${critical} credential(s) need rotating and removing.`);
+} else {
+  log('PASSED: no credentials found.');
+}
+
+// Written before exiting, so the report survives a non-zero exit. The first
+// version of this called writeFileSync above the verdict and silently dropped the
+// one line anyone actually reads.
 writeFileSync('secret-scan.txt', out.join('\n'));
+
+if (critical > 0) process.exit(1);

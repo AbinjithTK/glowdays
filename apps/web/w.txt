@@ -1,0 +1,4 @@
+vite.config.ts(21,5): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'allowedHosts' does not exist in type 'ServerOptions'.
+EXIT=0 

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Glowdays — Market Validation and Action Plan</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm 18mm 18mm; }
+  :root{
+    --ink:#2B2426; --inkSoft:#5F5450; --canvas:#FBF9F7; --paper:#FFFFFF;
+    --rose:#A8465E; --roseDeep:#8E3850; --roseSoft:#F7E6E8;
+    --lavender:#EEE9F7; --caution:#F6EDD9; --sage:#E6EFE8; --danger:#9B3A42;
+    --line:#E4DCD8; --lineStrong:#B5A7A1;
+    --teal:#26706B; --ochre:#9A6A12; --violet:#6B4E8C; --slate:#3F6491;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  body{
+    font-family:"Inter","Segoe UI",-apple-system,sans-serif;
+    color:var(--ink); background:var(--paper);
+    font-size:10.2pt; line-height:1.55; margin:0;
+  }
+  h1,h2,h3,.serif{font-family:"DM Serif Display","Georgia",serif; font-weight:400}
+  /* cover */
+  .cover{page-break-after:always; padding-top:14mm}
+  .cover .eyebrow{color:var(--roseDeep); font-size:8.5pt; letter-spacing:.16em; text-transform:uppercase; font-weight:600}
+  .cover h1{font-size:34pt; line-height:1.1; margin:6mm 0 4mm}
+  .cover .sub{font-size:12pt; color:var(--inkSoft); max-width:135mm}
+  .rule{height:1px;background:var(--line);margin:8mm 0}
+  .meta{font-size:9pt;color:var(--inkSoft)}
+  .meta b{color:var(--ink);font-weight:600}
+  .verdictbox{
+    background:var(--lavender); border-radius:6mm; padding:8mm; margin-top:10mm;
+  }
+  .verdictbox .lab{font-size:8.5pt;letter-spacing:.14em;text-transform:uppercase;color:var(--roseDeep);font-weight:600}
+  .verdictbox p{font-size:12.5pt;line-height:1.4;margin:3mm 0 0;font-family:"DM Serif Display",Georgia,serif}
+  /* sections */
+  h2{font-size:19pt; margin:0 0 1mm; page-break-after:avoid}
+  h2 .num{color:var(--rose); font-size:11pt; font-family:Inter,sans-serif; font-weight:600; letter-spacing:.1em; display:block; margin-bottom:2mm}
+  section{page-break-before:always}
+  h3{font-size:12.5pt;margin:7mm 0 2mm; page-break-after:avoid}
+  p{margin:0 0 3mm}
+  .lead{color:var(--inkSoft); font-size:11pt; margin-bottom:5mm}
+  ul,ol{margin:0 0 4mm; padding-left:6mm}
+  li{margin-bottom:1.8mm}
+  a{color:var(--rose); text-decoration:none; border-bottom:.4pt solid var(--roseSoft)}
+  table{width:100%; border-collapse:collapse; margin:3mm 0 5mm; font-size:9.4pt}
+  th{
+    text-align:left; font-size:8pt; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--inkSoft); font-weight:600; padding:2mm 3mm 2mm 0; border-bottom:1px solid var(--lineStrong);
+  }
+  td{padding:2.4mm 3mm 2.4mm 0; border-bottom:1px solid var(--line); vertical-align:top}
+  td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .callout{border-radius:4mm; padding:5mm 6mm; margin:4mm 0; font-size:9.8pt}
+  .callout .t{font-weight:600; margin-bottom:1.5mm; display:block}
+  .risk{background:var(--caution)}
+  .kill{background:#F7EAEA; border-left:3pt solid var(--danger)}
+  .good{background:var(--sage)}
+  .info{background:var(--lavender)}
+  .tag{
+    display:inline-block; font-size:7.6pt; letter-spacing:.08em; text-transform:uppercase;
+    padding:.9mm 2.4mm; border-radius:99px; font-weight:600; white-space:nowrap;
+  }
+  .tag.t-teal{background:#E3EFED;color:var(--teal)} .tag.t-ochre{background:#F7EEDA;color:var(--ochre)}
+  .tag.t-violet{background:#EEE8F5;color:var(--violet)} .tag.t-slate{background:#E8EDF4;color:var(--slate)}
+  .tag.t-danger{background:#F7EAEA;color:var(--danger)} .tag.t-rose{background:var(--roseSoft);color:var(--roseDeep)}
+  .stage{border-left:2.5pt solid var(--rose); padding:0 0 0 6mm; margin:0 0 7mm}
+  .stage h3{margin-top:0}
+  .stage .when{font-size:8.5pt;text-transform:uppercase;letter-spacing:.1em;color:var(--rose);font-weight:600}
+  .src{font-size:8.4pt;color:var(--inkSoft);margin-top:2mm;font-style:italic}
+  .foot{font-size:8.2pt;color:var(--inkSoft);border-top:1px solid var(--line);padding-top:3mm;margin-top:8mm}
+  .two{display:flex;gap:6mm} .two>div{flex:1}
+  .big{font-family:"DM Serif Display",Georgia,serif;font-size:22pt;line-height:1;display:block}
+  .biglab{font-size:8.5pt;text-transform:uppercase;letter-spacing:.1em;color:var(--inkSoft)}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="eyebrow">Market validation &amp; action plan</div>
+  <h1>Glowdays</h1>
+  <div class="sub">A private skincare diary that runs one pre-registered trial at a time. This document assesses whether it should be built, what stands in the way, and in what order to proceed.</div>
+  <div class="rule"></div>
+  <div class="meta">
+    Prepared <b>30 July 2026</b><br>
+    Product <b>Glowdays</b> (formerly SkinSignal) &middot; measurement provider <b>Perfect Corp YouCam Skin Analysis v2.1</b><br>
+    Prototype <b>83 screens</b>, Flowstep
+  </div>
+
+  <div class="verdictbox">
+    <span class="lab">Verdict</span>
+    <p>The idea is sound but mis-sequenced. The differentiating method is real and validated by competitors' own workarounds. One risk could end it before product-market fit: storing facial images makes you a biometric-privacy defendant in three US states.</p>
+  </div>
+
+  <div class="callout info" style="margin-top:8mm">
+    <span class="t">How to read this</span>
+    Sections 1–5 are findings. Section 6 is the plan, with explicit kill criteria at each stage. If you read only one thing, read Stage&nbsp;0: it costs two weeks and almost nothing, and it determines whether the product is possible at all.
+  </div>
+
+  <div class="foot">
+    Market figures are cited to their sources and, where reports disagree materially, the disagreement is reported rather than averaged. Third-party content is summarised and rephrased for licensing compliance. Nothing here is legal advice; the privacy section identifies exposure that requires review by qualified counsel.
+  </div>
+</div>
+
+<section>
+  <h2><span class="num">01</span>Market size, and why the published numbers are not a plan</h2>
+  <p class="lead">The space is real and growing. The sizing literature is not usable for decisions.</p>
+
+  <p>For overlapping definitions of AI skin analysis in 2026, published estimates span more than a factor of seven:</p>
+
+  <table>
+    <thead><tr><th>Source</th><th>2026 estimate</th><th>Stated CAGR</th><th>Horizon</th></tr></thead>
+    <tbody>
+      <tr><td><a href="https://www.360iresearch.com/library/intelligence/ai-skin-analysis-diagnostic">360iResearch</a></td><td class="num">USD 0.83bn</td><td class="num">15.9%</td><td class="num">2.02bn by 2032</td></tr>
+      <tr><td><a href="https://www.mordorintelligence.com/industry-reports/ai-skin-market">Mordor Intelligence</a></td><td class="num">USD 1.02bn</td><td class="num">19.3%</td><td class="num">2.45bn by 2031</td></tr>
+      <tr><td><a href="https://www.precedenceresearch.com/ai-skin-analysis-market">Precedence Research</a></td><td class="num">USD 2.09bn</td><td class="num">16.2%</td><td class="num">8.02bn by 2035</td></tr>
+      <tr><td><a href="https://cosmetics.einnews.com/pr_news/929054229/ai-skin-analysis-market-to-surpass-usd-6-30-billion-by-2033-expanding-at-16-8-cagr-2026-2033-forecast">Coherent (via EIN)</a></td><td class="num">USD 2.13bn</td><td class="num">16.8%</td><td class="num">6.30bn by 2033</td></tr>
+      <tr><td><a href="https://www.towardshealthcare.com/insights/ai-in-skincare-market-sizing">Towards Healthcare</a></td><td class="num">USD 5.84bn</td><td class="num">18.7%</td><td class="num">27.41bn by 2035</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout risk">
+    <span class="t">Finding</span>
+    A 7&times; spread across the same nominal market in the same year means these are marketing artefacts, not measurements. Do not put any of these numbers in a deck or a grant application as though they were facts. Cite the <em>direction</em> — consistent mid-to-high-teens growth — and nothing more.
+  </div>
+
+  <h3>The uncomfortable part</h3>
+  <p>What the reports do agree on is <em>who is buying</em>: beauty brands, retailers, clinics and med-spas embedding analysis into their own funnels. Perfect Corp positions the technology as something brands and clinics deploy, citing deployments with major dermatological skincare names.</p>
+  <p>The revenue in this category today is <strong>B2B tooling sold to brands, not consumer subscriptions</strong>. Glowdays is a consumer product, which is the thinner half of a growing market. That does not make it unviable, but it means the market-growth story is not evidence for <em>your</em> business model. It is evidence for your supplier's.</p>
+  <div class="src">Sources: report pages listed above; <a href="https://www.perfectcorp.com/business/products/ai-skin-diagnostic">Perfect Corp AI Skin Analysis</a>. Content rephrased for licensing compliance.</div>
+</section>
+
+<section>
+  <h2><span class="num">02</span>Competitive landscape</h2>
+  <p class="lead">Three clusters. You compete with one of them, and your supplier sits in another.</p>
+
+  <table>
+    <thead><tr><th>Cluster</th><th>Players</th><th>What they do</th><th>Relation to Glowdays</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="tag t-rose">Direct</span><br>Consumer trackers</td>
+        <td>Skin Bliss, TroveSkin</td>
+        <td>Face scan, routine building, product scoring, progress photos, recommendations</td>
+        <td>Head-on. Skin Bliss cites a 50,000-respondent satisfaction survey, so it has real scale and distribution.</td>
+      </tr>
+      <tr>
+        <td><span class="tag t-slate">Adjacent</span><br>Medical monitoring</td>
+        <td>SkinVision, Miiskin, mole trackers</td>
+        <td>Lesion and melanoma surveillance, some regulated as medical devices</td>
+        <td>Not competitors, but they shape what users expect a "skin app" to claim, and they raise the regulatory baseline in users' minds.</td>
+      </tr>
+      <tr>
+        <td><span class="tag t-ochre">Supplier</span><br>B2B white-label</td>
+        <td>Perfect Corp, Haut.ai, Revieve</td>
+        <td>Sell analysis APIs and turnkey experiences to brands</td>
+        <td>Perfect Corp is simultaneously your measurement supplier and a potential competitor. It publishes guides on building profitable skin-analysis apps on its own API.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout risk">
+    <span class="t">Structural risk: no moat at the analysis layer</span>
+    Anyone can buy the same scores you buy, from the same vendor, at the same quality. Your defensibility is entirely in the <em>method</em> layer — pre-registration, single-variable isolation, confidence gating, and refusal to show unsupportable comparisons. Protect that, and accept that the measurement itself is a commodity.
+  </div>
+  <div class="src">Sources: <a href="https://getskinbliss.com/">Skin Bliss</a>; <a href="https://www.perfectcorp.com/business/blog/ai-skincare/skin-detector-app">Perfect Corp app roundup</a>; <a href="https://www.perfectcorp.com/business/blog/ai-skincare/ai-skin-analysis-api-build-app">Perfect Corp build guide</a>. Rephrased for compliance.</div>
+</section>
+
+<section>
+  <h2><span class="num">03</span>The strongest validation is accidental</h2>
+  <p class="lead">Competitors' own guidance reinvents your product thesis as a workaround.</p>
+
+  <div class="callout good">
+    <span class="t">Independent guidance for using TroveSkin advises</span>
+    treating the app as a progress journal rather than a diagnostic tool; photographing in the same light and angle each time; changing one habit at a time; and reading week-to-week trends instead of day-to-day judgements.
+    <div class="src" style="color:var(--ink)">Paraphrased from <a href="https://apkafe.com/product/troveskin/">apkafe TroveSkin guide</a>.</div>
+  </div>
+
+  <p>That is Glowdays, described as a set of manual corrections a user must apply to make somebody else's app trustworthy. Four separate elements of your design — journal-not-diagnostic framing, capture consistency, single-variable isolation, and reading over weeks — appear in third-party advice about a competitor.</p>
+
+  <p>Separately, Skin Bliss acknowledges that a blurry photo or glare can drop ingredients from a scan and shift a score meaningfully. An incumbent conceding that its scores move with capture conditions is precisely the problem your confidence model exists to solve.</p>
+
+  <h3>What this does and does not prove</h3>
+  <ul>
+    <li><strong>Proves:</strong> the problem is real, users encounter it, and the workaround is already being taught informally.</li>
+    <li><strong>Does not prove:</strong> that users will pay for rigour. Methodology is harder to market than a score. "See your skin score" converts; "see whether your comparison is trustworthy" is a harder sell that appeals to a narrower, more patient audience.</li>
+  </ul>
+  <div class="src">Source: <a href="https://getskinbliss.com/blog/skin-bliss-app-faq/">Skin Bliss FAQ</a>. Rephrased for compliance.</div>
+</section>
+
+<section>
+  <h2><span class="num">04</span>The existential risk: biometric privacy</h2>
+  <p class="lead">This is the section that should change your launch plan.</p>
+
+  <p>Glowdays is a wellness app that collects facial images, derives inferences about the user's body, and transmits those images to a third-party processor. That is close to the paradigm case for the current wave of US biometric-privacy litigation.</p>
+
+  <table>
+    <thead><tr><th>Regime</th><th>Why it reaches you</th><th>Exposure</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Washington My Health My Data Act</strong></td>
+        <td>Consumer health data definitions reach facial imagery from which an identifier template can be extracted. Being outside HIPAA is expressly not a safe harbour for wellness apps.</td>
+        <td><span class="tag t-danger">Private right of action</span> via the state Consumer Protection Act. Described by practitioners as "BIPA 2.0".</td>
+      </tr>
+      <tr>
+        <td><strong>Illinois BIPA</strong></td>
+        <td>Facial geometry collection without compliant written consent and a published retention schedule.</td>
+        <td><span class="tag t-danger">Statutory damages per violation</span>, the most litigated biometric regime in the US.</td>
+      </tr>
+      <tr>
+        <td><strong>Texas CUBI</strong></td>
+        <td>Biometric identifiers captured for commercial purpose.</td>
+        <td>Attorney-General enforcement, substantial per-violation penalties.</td>
+      </tr>
+      <tr>
+        <td><strong>GDPR Art. 9</strong></td>
+        <td>Biometric and health data are special category; requires explicit consent and DPIA.</td>
+        <td>Relevant the moment you accept an EU user.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Class actions under the Washington statute have already been filed, including a matter premised on SDKs embedded in mobile apps collecting consumer health data. The litigation wave predicted when the Act passed has begun.</p>
+
+  <div class="callout kill">
+    <span class="t">Why this is existential rather than merely serious</span>
+    A single certified class action would cost more than this product will earn in several years. For a bootstrapped consumer app, biometric exposure is not a compliance line item — it is a survival question, and it must be resolved <em>before</em> user acquisition rather than after.
+  </div>
+
+  <h3>Mitigations, in order of cost-effectiveness</h3>
+  <ol>
+    <li><strong>Geofence at launch.</strong> Exclude Washington, Illinois and Texas until consent flows are counsel-reviewed. Nearly free, buys months.</li>
+    <li><strong>Say "biometric".</strong> Your consent sheet currently says "facial image". Compliant consent typically must name biometric collection explicitly, state purpose, name the processor, and publish a retention and destruction schedule.</li>
+    <li><strong>Version the consent and re-consent on change.</strong> Already designed; make sure the stored record includes the version and a hash of the text shown.</li>
+    <li><strong>Get the retention term contractually.</strong> The 24-hour Perfect Corp retention window appears on five user-facing screens as a factual promise, sourced from documentation rather than from your contract. Confirm it in writing before launch.</li>
+    <li><strong>Consider on-device-only originals.</strong> Upload for the analysis call, keep no server copy of the source image. This materially reduces exposure at the cost of cross-device history. Worth modelling as a product decision, not just a security one.</li>
+  </ol>
+  <div class="src">Sources: <a href="https://iapp.org/news/a/washingtons-my-health-my-data-act-welcome-to-bipa-2-0">IAPP on MHMDA</a>; <a href="https://www.jdsupra.com/legalnews/first-lawsuit-filed-under-washington-s-3046774/">first MHMDA lawsuit</a>; <a href="https://www.jdsupra.com/legalnews/biometrics-litigation-update-first-8887485/">SDK-based class action</a>; <a href="https://terms.law/washington-mhmda-for-wellness-apps/">MHMDA and wellness apps</a>; <a href="https://www.steptoe.com/en/news-publications/bipa-20-washingtons-new-privacy-law-creates-private-litigation-and-ag-enforcement-risk-for-businesses.html">Steptoe on private right of action</a>. Summarised; not legal advice.</div>
+</section>
+
+<section>
+  <h2><span class="num">05</span>Two data problems that constrain the product</h2>
+
+  <h3>5.1 The vendor's accuracy claim is internally inconsistent</h3>
+  <p>Across Perfect Corp's own pages the same capability is described as:</p>
+  <table>
+    <thead><tr><th>Claim</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td>95% test–retest reliability, verified by medical study</td><td><a href="https://yce.perfectcorp.com/ai-api/products/skin-analysis-api">Skin Analysis API page</a></td></tr>
+      <tr><td>95% clinical accuracy, dermatologist-grade</td><td><a href="https://www.perfectcorp.com/business/products/ai-skin-diagnostic">AI Skin Diagnostic page</a></td></tr>
+      <tr><td>80% correlation with dermatologist evaluations</td><td><a href="https://yce.perfectcorp.com/ai-api/products/ai-skin-analysis-and-api">Skin Analysis tool page</a></td></tr>
+    </tbody>
+  </table>
+  <p>Test–retest reliability, clinical accuracy and correlation with expert rating are three different quantities. A product whose entire positioning is honesty about measurement cannot repeat any of them. You need your own number.</p>
+
+  <div class="callout kill">
+    <span class="t">Gate zero</span>
+    Two HD scans of the same face in one sitting, same light, repeated across roughly ten people. This yields &sigma;, the test–retest spread per metric, which sets the smallest movement you are entitled to call a finding. <strong>If &sigma; exceeds roughly 8 raw points on hydration, the app cannot detect the effects it promises and the measurement claim must be dropped.</strong>
+  </div>
+
+  <h3>5.2 Pooled evidence cannot be a launch feature</h3>
+  <p>Your own admission threshold is 30 single-variable, high-detail, medium-confidence-or-better trials per product. The arithmetic of populating that is unforgiving:</p>
+  <div class="two" style="margin:4mm 0 5mm">
+    <div><span class="big">6,000</span><span class="biglab">clean trials to populate 200 products</span></div>
+    <div><span class="big">~30,000</span><span class="biglab">committed users, at 20% completion</span></div>
+    <div><span class="big">1</span><span class="biglab">screen users will actually see at launch</span></div>
+  </div>
+  <p>Which means <strong>the withheld-evidence state is your launch experience</strong>. It is a good screen and an honest one, but it cannot carry acquisition. Sequence pooling late and market something else first.</p>
+
+  <h3>5.3 Unit economics: unresolved</h3>
+  <p>Perfect Corp does not publish per-call API pricing; it is quote-based. This is the single largest open number in the business case. At two check-ins per user per month, plus storage of HD result archives and masks, cost per retained user determines whether any subscription price works. <strong>Obtain a written quote before further build.</strong></p>
+</section>
+
+<section>
+  <h2><span class="num">06</span>Action plan</h2>
+  <p class="lead">Four stages, each with an explicit kill criterion. Do not begin a stage before the previous gate passes.</p>
+
+  <div class="stage">
+    <div class="when">Stage 0 &middot; two weeks &middot; before any further build</div>
+    <h3>Establish that measurement is possible</h3>
+    <ul>
+      <li>Obtain written API pricing and the contractual image-retention term from Perfect Corp.</li>
+      <li>Run the test–retest study: 10 participants, two HD scans in one sitting, consistent light. Compute &sigma; per metric.</li>
+      <li>Re-derive the minimum detectable movement from &sigma; and update every threshold in the product accordingly.</li>
+    </ul>
+    <div class="callout kill" style="margin-bottom:0"><span class="t">Kill criterion</span> &sigma; on the headline metric exceeds ~8 raw points &rarr; stop. Ship a pre-registered journal without scores, or abandon.</div>
+  </div>
+
+  <div class="stage">
+    <div class="when">Stage 1 &middot; four weeks &middot; concierge validation</div>
+    <h3>Prove people can produce comparable pairs</h3>
+    <ul>
+      <li>Twenty recruited users, one pre-registered trial each, eight weeks. No pooling, no shelf, no calendar.</li>
+      <li>Run the five-task usability script from the retention strategy, against its stated pass criteria: 4 of 5 start a scan unaided; 4 of 5 explain "not enough evidence" correctly; nobody reads a raw score as a diagnosis; 4 of 5 find deletion within 60 seconds.</li>
+      <li>Geofenced. Counsel-reviewed consent in place before the first upload.</li>
+    </ul>
+    <div class="callout kill" style="margin-bottom:0"><span class="t">Kill criterion</span> Fewer than half produce two comparable check-ins &rarr; the capture-consistency problem is unsolved, and UI will not fix it.</div>
+  </div>
+
+  <div class="stage">
+    <div class="when">Stage 2 &middot; closed beta</div>
+    <h3>Test whether the loop retains without coercion</h3>
+    <ul>
+      <li>Add shelf, calendar, rhythm, drafts, export. Still geofenced.</li>
+      <li>Instrument the north-star metric already defined: <em>meaningful comparison rate</em> — new trials producing two successful scans within the chosen cadence whose owner opens the comparison.</li>
+      <li>Treat the harm guardrails as hard stops on any retention experiment: notification opt-out rate, notification disable rate, track and account deletion rate, support complaints.</li>
+    </ul>
+    <div class="callout kill" style="margin-bottom:0"><span class="t">Kill criterion</span> Retention rises while deletion or opt-out also rises &rarr; per your own strategy document, that is failure, not growth.</div>
+  </div>
+
+  <div class="stage">
+    <div class="when">Stage 3 &middot; after ~10,000 active users</div>
+    <h3>Turn on pooled evidence</h3>
+    <ul>
+      <li>Publish the pooling methodology before publishing any pooled number.</li>
+      <li>Enable only for products past the 30-trial threshold. Everything else keeps the withheld state.</li>
+      <li>Never rank, never recommend, never accept sponsorship. Continuation rate and distribution only.</li>
+    </ul>
+  </div>
+
+  <h3>Monetisation</h3>
+  <p>Subscription is the only model compatible with the product's own non-goals. Affiliate or commission revenue would corrupt pooled evidence, which is the sole durable asset. Expect low conversion and high retention among converts — a small, durable business rather than a venture-scale one. Decide explicitly which you are building, because the answer changes Stage 2's success threshold.</p>
+
+  <div class="callout info">
+    <span class="t">What would change the assessment</span>
+    If &sigma; comes back small and Stage 1 shows users can reliably produce comparable pairs, this is a defensible product with a genuine method advantage. If &sigma; is large, the honest move is to drop the measurement claim entirely and ship the pre-registered journal without scores — still useful to people, and a much smaller business.
+  </div>
+
+  <div class="foot">
+    Glowdays market validation and action plan &middot; 30 July 2026 &middot; prepared alongside the 83-screen Flowstep prototype and the architecture, dataset and retention documents in <code>/docs</code>. External sources are linked inline and summarised rather than reproduced. The privacy analysis identifies exposure and is not legal advice.
+  </div>
+</section>
+
+</body>
+</html>

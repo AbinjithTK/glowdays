@@ -1,0 +1,20 @@
+{
+  "name": "glowdays",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Glowdays - a skin diary that tells you whether a product is actually working",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "dev:api": "pnpm --filter @glowdays/api dev"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.2",
+    "typescript": "5.7.2"
+  },
+  "packageManager": "pnpm@11.8.0"
+}

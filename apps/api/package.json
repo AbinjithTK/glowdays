@@ -1,0 +1,45 @@
+{
+  "name": "@glowdays/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "//files": [
+    "Controls what pnpm deploy copies into a deployment bundle.",
+    "Without this it copies the whole package directory, which swept in .pgdata",
+    "- the local embedded database - and .storage, the local scan photos. That",
+    "both bloated the archive past Lambda's upload limit and would have shipped",
+    "development data to a public endpoint."
+  ],
+  "files": [
+    "dist",
+    "migrations"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsc -p tsconfig.json && node --test \"dist/**/*.test.js\"",
+    "dev": "tsc -p tsconfig.json && node --env-file-if-exists=../../.env --watch dist/server.js",
+    "watch:types": "tsc -p tsconfig.json --watch --preserveWatchOutput",
+    "start": "node --env-file-if-exists=../../.env dist/server.js",
+    "db:migrate": "tsc -p tsconfig.json && node --env-file-if-exists=../../.env dist/db/migrate.js",
+    "db:status": "tsc -p tsconfig.json && node --env-file-if-exists=../../.env dist/db/migrate.js --status",
+    "smoke": "node --env-file-if-exists=../../.env dist/scripts/smoke.js",
+    "seed": "node --env-file-if-exists=../../.env dist/scripts/seed.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.717.0",
+    "@aws-sdk/s3-request-presigner": "3.717.0",
+    "@glowdays/core": "workspace:*",
+    "@hono/node-server": "1.13.7",
+    "drizzle-orm": "0.38.2",
+    "hono": "4.6.14",
+    "jose": "5.9.6",
+    "postgres": "3.4.5",
+    "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "typescript": "5.7.2",
+    "@electric-sql/pglite": "0.5.4"
+  }
+}

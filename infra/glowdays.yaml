@@ -1,0 +1,275 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Glowdays API and web app. One Lambda function behind a Function URL, a private
+  S3 bucket for check-in photographs, and a log group.
+
+  Deliberately no VPC. Reaching RDS privately would mean a NAT gateway for the
+  outbound calls to the analysis provider, which is an extra failure point and a
+  standing monthly cost. The database is reached over TLS on the public internet
+  instead, and the application refuses a remote connection string that does not
+  demand TLS.
+
+  Deliberately no CloudFront. The photographs are served through short-lived
+  presigned URLs, so there is nothing cacheable, and an edge cache in front of
+  face images is a liability rather than a feature.
+
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+    AllowedValues: [prod, staging]
+
+  ArtifactBucket:
+    Type: String
+    Description: Bucket holding the deployment zip.
+
+  ArtifactKey:
+    Type: String
+    Description: Key of the deployment zip inside ArtifactBucket.
+
+  DatabaseUrl:
+    Type: String
+    NoEcho: true
+    Description: >
+      Postgres connection string. Must include sslmode=require; the application
+      refuses a remote URL without it.
+
+  YoucamApiKey:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: >
+      Perfect Corp API key. Server-only, never sent to a client. May be left
+      empty to deploy in fixture mode and supplied later.
+
+  YoucamMode:
+    Type: String
+    Default: fixture
+    AllowedValues: [live, fixture]
+    Description: >
+      `live` calls the real analyser and spends units. `fixture` returns
+      deterministic local responses and spends none. Deploying fixture-first gets
+      a working URL up without waiting on a key; flipping to live is one
+      update-function-configuration call.
+
+  CorsOrigins:
+    Type: String
+    Default: ""
+    Description: >
+      Extra browser origins to allow. Usually empty, because the function serves
+      the web app itself and same-origin needs no entry.
+
+  ConcernSet:
+    Type: String
+    Default: surfaced
+    AllowedValues: [surfaced, all]
+    Description: >
+      Analysis breadth. Billing is banded by concern count: eight HD concerns
+      cost 16 units, all sixteen cost 22.
+
+  DemoAccessCode:
+    Type: String
+    NoEcho: true
+    MinLength: 12
+    Description: >
+      Shared code a reviewer exchanges for a session. Anyone holding it can open
+      a diary, so treat it as a password and rotate it after judging.
+
+  SessionSigningSecret:
+    Type: String
+    NoEcho: true
+    MinLength: 16
+    Description: >
+      HMAC key for the sessions issued in demo mode. Changing it signs everyone
+      out, which is the intended way to revoke access after judging.
+
+Resources:
+  # ------------------------------------------------------------------ storage
+
+  MediaBucket:
+    Type: AWS::S3::Bucket
+    # Retained on stack deletion. These are photographs of people's faces; a
+    # mistyped stack name should not be able to destroy them.
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub "glowdays-media-${Stage}-${AWS::AccountId}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        # Off deliberately. A deletion request has to actually delete, and
+        # versioning would leave a recoverable copy behind after someone asked
+        # for their face to be removed.
+        Status: Suspended
+      LifecycleConfiguration:
+        Rules:
+          - Id: abort-incomplete-uploads
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+
+  # Refuse any request that is not over TLS. Presigned URLs are https, so this
+  # costs nothing and closes a downgrade.
+  MediaBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref MediaBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !Sub "${MediaBucket.Arn}"
+              - !Sub "${MediaBucket.Arn}/*"
+            Condition:
+              Bool:
+                "aws:SecureTransport": false
+
+  # --------------------------------------------------------------------- iam
+
+  ApiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: logs
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub "${ApiLogGroup.Arn}:*"
+        - PolicyName: media
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              # Scoped to this bucket and to the four actions the storage
+              # adapter uses. No s3:* and no wildcard resource.
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:DeleteObject
+                Resource: !Sub "${MediaBucket.Arn}/*"
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !GetAtt MediaBucket.Arn
+
+  # ------------------------------------------------------------------ compute
+
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/glowdays-api-${Stage}"
+      # Long enough to debug a submission, short enough that request logs are
+      # not kept indefinitely.
+      RetentionInDays: 14
+
+  Api:
+    Type: AWS::Lambda::Function
+    DependsOn: ApiLogGroup
+    Properties:
+      FunctionName: !Sub "glowdays-api-${Stage}"
+      Runtime: nodejs22.x
+      # Graviton. Cheaper per millisecond and the bundle is pure JavaScript, so
+      # there is no native module to worry about.
+      Architectures: [arm64]
+      Handler: index.handler
+      Role: !GetAtt ApiRole.Arn
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref ArtifactKey
+      # 1024 MB is chosen for CPU, not memory. Lambda scales CPU with memory, and
+      # this process decodes a JPEG and copies mask images.
+      MemorySize: 1024
+      # An analysis call uploads an image to the provider and creates a task.
+      # 30 seconds leaves room for a slow upload without letting a hung request
+      # occupy a browser indefinitely.
+      Timeout: 30
+      Environment:
+        Variables:
+          NODE_ENV: production
+          DATABASE_URL: !Ref DatabaseUrl
+          YOUCAM_MODE: !Ref YoucamMode
+          YOUCAM_API_KEY: !Ref YoucamApiKey
+          YOUCAM_TASK_VERSION: v2.1
+          YOUCAM_CONCERN_SET: !Ref ConcernSet
+          STORAGE_DRIVER: s3
+          S3_BUCKET: !Ref MediaBucket
+          S3_REGION: !Ref AWS::Region
+          SIGNED_URL_TTL_SECONDS: "300"
+          # Demo mode, not Cognito, and deliberately so.
+          #
+          # A reviewer signs in with a shared access code. That removes email
+          # delivery from the critical path entirely: Cognito's own sender is
+          # rate limited to a few dozen messages a day, and using a real address
+          # means SES, which starts sandboxed and can take a day to leave. If
+          # that is unfinished, nobody can sign up, and an app nobody can open
+          # scores nothing.
+          #
+          # The Cognito path exists in the code (auth/cognito.ts, routes/auth.ts,
+          # auth/verify.ts) and switches on with AUTH_MODE=cognito plus the three
+          # COGNITO_* variables. It is for the native release, where real accounts
+          # matter. No user pool is created here, because an unused pool with
+          # password auth enabled is attack surface for nothing.
+          AUTH_MODE: demo
+          DEMO_ACCESS_CODE: !Ref DemoAccessCode
+          DEV_AUTH_SECRET: !Ref SessionSigningSecret
+          CORS_ORIGINS: !Ref CorsOrigins
+          # The web app travels in the same zip, so the function serves both on
+          # one origin.
+          WEB_DIST_DIR: web
+          # Absent rather than false, so nothing here can enable the dev routes.
+          # The application also refuses them outright when NODE_ENV=production.
+
+  ApiUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt Api.Arn
+      # The application authenticates its own requests with bearer tokens. IAM
+      # auth here would also block the browser, which cannot sign SigV4.
+      AuthType: NONE
+
+  ApiUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt Api.Arn
+      Action: lambda:InvokeFunctionUrl
+      Principal: "*"
+      FunctionUrlAuthType: NONE
+
+Outputs:
+  Url:
+    Description: Public URL for the app and the API.
+    Value: !GetAtt ApiUrl.FunctionUrl
+  SignInNote:
+    Description: How to sign in to the deployed app.
+    Value: >
+      Demo mode. Open the URL and enter any email plus the DemoAccessCode. No
+      verification email is sent and no Cognito pool is involved.
+  MediaBucketName:
+    Value: !Ref MediaBucket
+  LogGroup:
+    Value: !Ref ApiLogGroup
+  FunctionName:
+    Value: !Ref Api

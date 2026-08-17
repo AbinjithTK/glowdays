@@ -1,0 +1,61 @@
+node_modules/
+dist/
+.turbo/
+
+# secrets - never commit
+.env
+.env.local
+.env.*.local
+
+# Deployment secrets written to disk by scripts/deploy.ps1 and rotate-secrets.ps1.
+#
+# These were not ignored, and signing-secret.txt is the HMAC key for every session
+# the deployed build issues - committing it would let anyone mint a valid token for
+# any account. access-code.txt is the shared password a reviewer signs in with.
+access-code.txt
+signing-secret.txt
+deployed-url.txt
+
+# Editor MCP configuration. Holds a live YouCam API bearer token in an
+# Authorization header, so it is a credential file despite looking like settings.
+.kiro/settings/mcp.json
+
+# A captured provider response. Contains a presigned S3 URL complete with an
+# access key id and signature.
+youcam-auth.txt
+
+# Scratch output from the probe scripts. Written to files rather than stdout
+# because PowerShell mangles long console lines.
+probe-*.txt
+*-check.txt
+*-out.txt
+rotate.txt
+dt.txt
+dt.mjs
+lg.txt
+staged.txt
+
+# Unrelated third-party tooling that happens to live in this working directory.
+# Not part of Glowdays, 799 files, and one 28 MB test fixture.
+gstack/
+
+# local dev storage (stands in for S3)
+.storage/
+
+# YouCam fixture captures may contain a real face photo response
+fixtures/live/
+
+*.log
+.DS_Store
+Thumbs.db
+
+# Embedded Postgres data directories, local development only.
+#
+# Only `.pgdata/` was listed, which missed the two that actually exist and hold
+# several thousand database files between them.
+.pgdata/
+.pgdata-*/
+
+# deployment artefact, rebuilt by scripts/bundle-api.mjs
+dist-deploy/
+.deploy/

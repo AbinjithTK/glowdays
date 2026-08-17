@@ -1,0 +1,25 @@
+packages:
+  - "packages/*"
+  - "apps/*"
+
+allowBuilds:
+  esbuild: set this to true or false
+
+# pnpm re-runs an install check before every `pnpm run`, and a blocked install
+# script makes that check exit non-zero. The effect is that one warning renders
+# every script in the workspace unrunnable rather than just printing.
+#
+# Vite pulls esbuild, which ships a platform binary and normally links it from a
+# postinstall. Verified to work without that step: the binary comes from the
+# @esbuild/win32-x64 optional package and Vite resolves it directly, so a
+# production build completes and the emitted CSS and JS are correct. Turning off
+# the pre-run verification keeps the warning informational.
+#
+# This lives here rather than in .npmrc because pnpm 10 moved these settings
+# into the workspace file, where the key is camelCase.
+verifyDepsBeforeRun: false
+
+# Nothing in the workspace needs an install script to run. drizzle-kit was the
+# one package that did, and it was dropped in favour of numbered SQL migrations
+# applied by apps/api/src/db/migrate.ts. Tests use Node's built-in runner rather
+# than vitest for the same reason.

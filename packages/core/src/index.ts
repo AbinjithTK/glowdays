@@ -1,0 +1,47 @@
+export {
+  CONCERN_COST,
+  HIGHER_IS_BETTER,
+  METRICS,
+  SCORE_METRICS,
+  SURFACED_METRICS,
+  SUMMARY_REGION,
+  actionsForTier,
+  estimateUnits,
+  metric,
+  metricsForSet,
+  regionsFor,
+  type ConcernSet,
+  type MetricDef,
+  type MetricId,
+  type MetricKind,
+  type Tier,
+} from './metrics.js';
+
+export {
+  BANDS,
+  DAYS_APART,
+  THRESHOLDS_ARE_PROVISIONAL,
+  assessComparison,
+  daysBetween,
+  labelText,
+  rationale,
+  type CaptureQuality,
+  type ComparisonVerdict,
+  type ConfidenceLabel,
+  type ScanForComparison,
+  type SignalId,
+  type SignalReading,
+  type SignalStatus,
+} from './confidence.js';
+
+export {
+  MAX_STICKERS_PER_ENTRY,
+  STICKERS,
+  sticker,
+  stickersFrom,
+  stickersOfKind,
+  summariseConfounders,
+  type ConfounderSummary,
+  type StickerDef,
+  type StickerKind,
+} from './stickers.js';

@@ -16,12 +16,13 @@
  * auth host stay entirely on the server side of the boundary.
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { api, ApiError, setToken } from '../lib/api.ts';
+import { GoogleButton } from '../ui/GoogleButton.tsx';
 import {
   Advisory,
   Eyebrow,
@@ -50,6 +51,9 @@ export function SignUp() {
   const [password, setPassword] = useState('');
   const [reveal, setReveal] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const health = useQuery({ queryKey: ['health'], queryFn: api.health, retry: 1 });
+  const authBaseUrl = health.data?.authBaseUrl ?? null;
 
   const create = useMutation({
     mutationFn: () =>
@@ -96,6 +100,20 @@ export function SignUp() {
               </Lead>
             </div>
           </div>
+
+          {/* Offered at the top, because the fastest route should not be underneath the
+              form it replaces. The same Google round trip creates the account and signs
+              you in, so there is no separate "sign up with Google". */}
+          {authBaseUrl ? (
+            <div className="mt-8 flex flex-col gap-3">
+              <GoogleButton authBaseUrl={authBaseUrl} onError={(m) => setError(m || null)} />
+              <div className="flex items-center gap-3">
+                <span className="bg-line h-px flex-1" aria-hidden />
+                <span className="text-ink-soft text-xs">or use an email</span>
+                <span className="bg-line h-px flex-1" aria-hidden />
+              </div>
+            </div>
+          ) : null}
 
           <label className="mt-8 flex flex-col gap-2">
             <span className="text-ink-soft text-xs font-semibold tracking-widest uppercase">

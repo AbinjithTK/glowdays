@@ -20,7 +20,7 @@ import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
 import { z, ZodError } from 'zod';
 
-import { neonAuthEnabled } from './auth/neon-auth.js';
+import { neonAuthEnabled, neonAuthPublicBaseUrl } from './auth/neon-auth.js';
 import { mintDemoToken } from './auth/verify.js';
 
 import { closeDb, db, initDb, isEmbedded } from './db/client.js';
@@ -122,6 +122,12 @@ export function createApp() {
        * page needs to know which doors to show.
        */
       accounts: neonAuthEnabled(),
+      /**
+       * Where the browser sends the Google round trip. Public - it is an endpoint,
+       * not a credential - and reported rather than compiled into the client so the
+       * same bundle works against any branch's auth service.
+       */
+      authBaseUrl: neonAuthPublicBaseUrl(),
     });
   });
 

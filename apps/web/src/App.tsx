@@ -7,6 +7,7 @@ import { Capture } from './screens/Capture.tsx';
 import { Diary } from './screens/Diary.tsx';
 import { Me } from './screens/Me.tsx';
 import { Landing } from './screens/Landing.tsx';
+import { OAuthFinish } from './screens/OAuthFinish.tsx';
 import { hasOnboarded, Onboarding } from './screens/Onboarding.tsx';
 import { SignUp } from './screens/SignUp.tsx';
 import { ScanDetail } from './screens/ScanDetail.tsx';
@@ -53,6 +54,9 @@ export function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        {/* Where Google returns. Reachable while unauthenticated by definition - it is
+            the screen that obtains the session. */}
+        <Route path="/oauth/finish" element={<OAuthFinish />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );

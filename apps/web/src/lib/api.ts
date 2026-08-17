@@ -435,6 +435,8 @@ export const api = {
       auth: 'dev' | 'demo' | 'cognito';
       /** True when Neon Auth is configured and real sign-up is available. */
       accounts?: boolean;
+      /** Where the Google round trip goes. Null when accounts are unavailable. */
+      authBaseUrl?: string | null;
     }>('/health'),
 
   /**
@@ -449,6 +451,16 @@ export const api = {
 
   signIn: (input: { email: string; password: string }) =>
     request<{ token: string; email: string }>('/join/sign-in', { method: 'POST', body: input }),
+
+  /**
+   * Trade a Neon Auth JWT for one of our sessions. Used to finish Google sign-in,
+   * where the session cookie is stranded on the auth service's own host.
+   */
+  exchangeAuthToken: (token: string) =>
+    request<{ token: string; email: string }>('/join/exchange', {
+      method: 'POST',
+      body: { token },
+    }),
 
   /** Local sign-in. Only mounted when the API is in dev mode. */
   devToken: (email: string, authUid: string) =>

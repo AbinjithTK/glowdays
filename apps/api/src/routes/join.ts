@@ -18,7 +18,7 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
 
-import { signIn, signUp } from '../auth/neon-auth.js';
+import { signIn, signUp, verifyNeonJwt } from '../auth/neon-auth.js';
 import { AuthError, mintNeonToken } from '../auth/verify.js';
 import { type AppEnv } from '../http/context.js';
 import { AppError } from '../http/problem.js';
@@ -86,6 +86,35 @@ joinRoute.post('/sign-up', async (c) => {
   } catch (err) {
     throw new AppError('unauthorised', err instanceof AuthError ? err.message : 'Sign-up failed', {
       detail: 'Nothing was created. Check the details and try again.',
+    });
+  }
+});
+
+/**
+ * Exchange a Neon Auth JWT for one of our sessions.
+ *
+ * This is how Google sign-in completes. The browser does the OAuth round trip against
+ * the auth service, which leaves a session cookie on that service's own host - a host
+ * our server cannot read a cookie from and the browser can only send one to. So the
+ * browser fetches a short-lived JWT from there and posts it here.
+ *
+ * Unauthenticated by necessity, and safe to be: the token is verified against the key
+ * set published by our own Neon branch, so an arbitrary caller cannot forge one. It is
+ * also why the endpoint takes a JWT rather than a user id - a caller-supplied id would
+ * let anyone name any account.
+ */
+joinRoute.post('/exchange', async (c) => {
+  const input = z
+    .object({ token: z.string().min(20).max(4000) })
+    .parse(await c.req.json().catch(() => ({})));
+
+  try {
+    const user = await verifyNeonJwt(input.token);
+    const token = await mintNeonToken({ userId: user.id, email: user.email, name: user.name });
+    return c.json({ token, tokenType: 'Bearer', email: user.email });
+  } catch (err) {
+    throw new AppError('unauthorised', err instanceof AuthError ? err.message : 'Sign-in failed', {
+      detail: 'Start the sign-in again.',
     });
   }
 });

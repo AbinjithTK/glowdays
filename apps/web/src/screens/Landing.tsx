@@ -24,9 +24,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, Camera, KeyRound, ScanFace, ShieldCheck, SlidersHorizontal } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { api } from '../lib/api.ts';
+import { GoogleButton } from '../ui/GoogleButton.tsx';
 import { Eyebrow, PrimaryButton, Screen, TextButton } from '../ui/primitives.tsx';
 
 const PROOFS = [
@@ -55,11 +57,13 @@ const PROOFS = [
 
 export function Landing() {
   const navigate = useNavigate();
+  const [oauthError, setOauthError] = useState<string | null>(null);
   const health = useQuery({ queryKey: ['health'], queryFn: api.health, retry: 1 });
 
   // Only offered when the server says real accounts exist. Showing a sign-up button
   // that 404s is worse than showing only the door that works.
   const accounts = health.data?.accounts === true;
+  const authBaseUrl = health.data?.authBaseUrl ?? null;
   const demo = health.data?.auth === 'demo';
 
   return (
@@ -81,9 +85,21 @@ export function Landing() {
           </p>
 
           <div className="mt-8 flex flex-col gap-3">
+            {/* Google first, because it is one tap and creates the account and the
+                session in the same motion. */}
+            {accounts && authBaseUrl ? (
+              <GoogleButton authBaseUrl={authBaseUrl} tone="dark" onError={setOauthError} />
+            ) : null}
+
+            {oauthError ? (
+              <p className="text-sm text-white" role="alert">
+                {oauthError}
+              </p>
+            ) : null}
+
             {accounts ? (
               <PrimaryButton onClick={() => navigate('/sign-up')}>
-                Create my diary
+                Create a diary with an email
               </PrimaryButton>
             ) : null}
 

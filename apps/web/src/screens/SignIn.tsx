@@ -28,6 +28,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { api, ApiError, setToken } from '../lib/api.ts';
+import { GoogleButton } from '../ui/GoogleButton.tsx';
 import {
   Advisory,
   Eyebrow,
@@ -80,6 +81,7 @@ export function SignIn() {
   const health = useQuery({ queryKey: ['health'], queryFn: api.health, retry: 1 });
 
   const accounts = health.data?.accounts === true;
+  const authBaseUrl = health.data?.authBaseUrl ?? null;
   const codeAvailable = health.data?.auth === 'demo';
   const ready = health.data !== undefined;
 
@@ -238,6 +240,19 @@ export function SignIn() {
                   it a moment and reload.
                 </span>
               </Advisory>
+            ) : null}
+
+            {/* Above the password button and separated, so it reads as an alternative
+                rather than as a step in the form. */}
+            {accounts && authBaseUrl ? (
+              <>
+                <GoogleButton authBaseUrl={authBaseUrl} onError={(m) => setError(m || null)} />
+                <div className="flex items-center gap-3 py-1">
+                  <span className="bg-line h-px flex-1" aria-hidden />
+                  <span className="text-ink-soft text-xs">or</span>
+                  <span className="bg-line h-px flex-1" aria-hidden />
+                </div>
+              </>
             ) : null}
 
             <PrimaryButton type="submit" disabled={!canSubmit || busy}>

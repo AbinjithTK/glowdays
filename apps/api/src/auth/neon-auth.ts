@@ -23,6 +23,8 @@
  * removes CORS and keeps the auth host out of the page's network surface entirely.
  */
 
+import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
+
 import { config } from '../env.js';
 
 import { AuthError } from './verify.js';
@@ -147,4 +149,71 @@ export async function signUp(input: {
 
 export async function signIn(input: { email: string; password: string }): Promise<NeonUser> {
   return post('/sign-in/email', { email: input.email, password: input.password });
+}
+
+// -------------------------------------------------------------------- oauth
+
+/** Public, and needed by the browser for the Google round trip. */
+export function neonAuthPublicBaseUrl(): string | null {
+  return config().NEON_AUTH_BASE_URL ?? null;
+}
+
+let keySet: ReturnType<typeof createRemoteJWKSet> | null = null;
+
+function jwks(): ReturnType<typeof createRemoteJWKSet> {
+  if (!keySet) {
+    // Cached, and jose re-fetches on an unknown `kid`, which is what key rotation
+    // needs. A one-off fetch would break silently the first time Neon rotates.
+    keySet = createRemoteJWKSet(new URL(`${baseUrl()}/.well-known/jwks.json`));
+  }
+  return keySet;
+}
+
+/**
+ * Verify a JWT minted by Neon Auth and return the identity inside it.
+ *
+ * This is the bridge across the site boundary that Google sign-in creates. After the
+ * OAuth round trip the Better Auth session cookie belongs to the auth service's host,
+ * which our server cannot read and which the browser can only send to that host. So
+ * the browser fetches a token from the auth service and posts it here, and this
+ * verifies it against the published key set before it is trusted for anything.
+ *
+ * The key set is the trust anchor: it is specific to this Neon branch, so a signature
+ * that validates against it came from our auth service. The issuer is checked as well
+ * where present, because a valid signature from the right key set still says nothing
+ * about which deployment minted the token.
+ *
+ * The algorithm is EdDSA over Ed25519, not RSA - confirmed from the live JWKS and the
+ * token header - which jose handles natively.
+ */
+export async function verifyNeonJwt(token: string): Promise<NeonUser> {
+  if (!token || token.split('.').length !== 3) {
+    throw new AuthError('That sign-in token is not a JWT');
+  }
+
+  let payload: JWTPayload;
+  try {
+    ({ payload } = await jwtVerify(token, jwks(), { algorithms: ['EdDSA'] }));
+  } catch {
+    // Deliberately not echoing jose's message. It distinguishes expired from
+    // malformed from wrong-key, which is useful to us and is information a caller
+    // probing the endpoint should not be handed.
+    throw new AuthError('That sign-in token was not accepted');
+  }
+
+  const issuer = typeof payload.iss === 'string' ? payload.iss : null;
+  if (issuer) {
+    const expected = new URL(baseUrl()).origin;
+    if (!issuer.startsWith(expected)) {
+      throw new AuthError('That token came from a different sign-in service');
+    }
+  }
+
+  const sub = typeof payload.sub === 'string' ? payload.sub : null;
+  const email = typeof payload['email'] === 'string' ? payload['email'] : null;
+  if (!sub) throw new AuthError('That token has no subject');
+  if (!email) throw new AuthError('That token carries no email address');
+
+  const name = typeof payload['name'] === 'string' ? payload['name'] : null;
+  return { id: sub, email, name };
 }

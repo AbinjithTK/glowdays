@@ -25,6 +25,8 @@ param(
   # nobody is tempted to reuse a password they already have.
   [string]$DemoAccessCode,
   [string]$SessionSigningSecret,
+  # Public endpoint, not a secret, so it is a plain parameter with a default.
+  [string]$NeonAuthBaseUrl = 'https://ep-wild-hall-ax3eyncw.neonauth.c-4.us-east-2.aws.neon.tech/neondb/auth',
   [ValidateSet('live', 'fixture')][string]$YoucamMode = 'live',
   [ValidateSet('surfaced', 'all')][string]$ConcernSet = 'surfaced',
   [switch]$CodeOnly
@@ -173,6 +175,7 @@ else {
     "YoucamApiKey=$YoucamApiKey" `
     "DemoAccessCode=$DemoAccessCode" `
     "SessionSigningSecret=$SessionSigningSecret" `
+    "NeonAuthBaseUrl=$NeonAuthBaseUrl" `
     "YoucamMode=$YoucamMode" `
     "ConcernSet=$ConcernSet"
   if ($LASTEXITCODE -ne 0) { throw 'stack deploy failed' }

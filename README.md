@@ -76,7 +76,18 @@ YOUCAM_API_KEY=<your key>
 YOUCAM_CONCERN_SET=surfaced
 ```
 
-Sign-in locally is an email address alone. The deployed build uses `AUTH_MODE=demo`: an email plus a shared access code, exchanged for an HMAC session. That removes email delivery from the critical path — Cognito's own sender is rate limited and SES starts sandboxed, and a reviewer who cannot sign in cannot assess anything. The Cognito path exists in `auth/cognito.ts` and is inert unless `AUTH_MODE=cognito`.
+### Accounts
+
+Two doors, both real, and the landing page shows whichever the server reports:
+
+- **Real accounts** via **Neon Auth** (Better Auth, managed by Neon and deployed beside the Postgres compute). Email and password, with **email verification off**, so an account works the instant it is created. That is the whole reason it was chosen over Cognito: Cognito's own sender is rate limited and SES starts sandboxed, so a verification email may never arrive — and someone who cannot sign in cannot assess anything.
+- **A shared access code**, for reviewers who should not have to invent a password to look at something.
+
+Neon Auth is used as an **identity provider, not as the session**. It authenticates the person; we mint the token. Its JWT expires in fifteen minutes (verified: `exp - iat` is 900), so handing it to the browser would sign people out mid-check-in, and re-minting per request would put a cross-region round trip in the hot path of an app that already waits on an image analyser.
+
+The browser never contacts the auth service. It posts to our own origin and the API forwards the credentials server-side, which keeps the request same-origin and keeps the auth host off the page entirely. Two findings from probing the live service are worth knowing if you touch this: Better Auth **requires** an `Origin` header and refuses a request without one (`MISSING_ORIGIN`), and it does not care that the caller is a server; and subjects are namespaced `neon:<uuid>` alongside `demo:<email>` in `profile.auth_uid`, so the same email address signing in both ways correctly opens two separate diaries.
+
+`NEON_AUTH_BASE_URL` is additive rather than a fourth `AUTH_MODE`, deliberately: making it a mode would have meant replacing the one sign-in path already verified working in order to add a second. The Cognito path still exists in `auth/cognito.ts` and is inert unless `AUTH_MODE=cognito`.
 
 ### Tests
 

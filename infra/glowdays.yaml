@@ -67,6 +67,17 @@ Parameters:
       Analysis breadth. Billing is banded by concern count: eight HD concerns
       cost 16 units, all sixteen cost 22.
 
+  NeonAuthBaseUrl:
+    Type: String
+    Default: ""
+    Description: >
+      Neon Auth base URL, e.g.
+      https://<endpoint>.neonauth.<region>.aws.neon.tech/<db>/auth
+
+      Additive. When set, real email-and-password accounts are offered alongside the
+      shared access code; when empty, the /join routes are not mounted at all. Not a
+      secret: it is a public endpoint, and the browser never calls it directly.
+
   DemoAccessCode:
     Type: String
     NoEcho: true
@@ -234,6 +245,11 @@ Resources:
           # password auth enabled is attack surface for nothing.
           AUTH_MODE: demo
           DEMO_ACCESS_CODE: !Ref DemoAccessCode
+          # Real accounts, additive to the access code above. Both doors stay open:
+          # a reviewer with the code needs no signup, and anyone else can make an
+          # account. Swapping AUTH_MODE to a fourth value would have replaced the one
+          # sign-in path already verified working in order to add a second.
+          NEON_AUTH_BASE_URL: !Ref NeonAuthBaseUrl
           DEV_AUTH_SECRET: !Ref SessionSigningSecret
           CORS_ORIGINS: !Ref CorsOrigins
           # The web app travels in the same zip, so the function serves both on

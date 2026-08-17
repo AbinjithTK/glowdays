@@ -20,6 +20,7 @@ import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
 import { z, ZodError } from 'zod';
 
+import { neonAuthEnabled } from './auth/neon-auth.js';
 import { mintDemoToken } from './auth/verify.js';
 
 import { closeDb, db, initDb, isEmbedded } from './db/client.js';
@@ -29,6 +30,7 @@ import { AppError, isApiPath, notFound, onError } from './http/problem.js';
 import { accountRoute } from './routes/account.js';
 import { authRoute } from './routes/auth.js';
 import { devRoute } from './routes/dev.js';
+import { joinRoute } from './routes/join.js';
 import { mediaRoute } from './routes/media.js';
 import { notesRoute } from './routes/notes.js';
 import { productsRoute } from './routes/products.js';
@@ -113,6 +115,13 @@ export function createApp() {
       // Declared so the sign-in screen can render the right form rather than
       // hard-coding an endpoint that only exists in one deployment.
       auth: cfg.AUTH_MODE,
+      /**
+       * Whether real accounts are available. Reported separately from `auth`
+       * because the two are independent: Neon Auth is additive, so a deployment can
+       * offer both a shared access code and real sign-up at once, and the landing
+       * page needs to know which doors to show.
+       */
+      accounts: neonAuthEnabled(),
     });
   });
 
@@ -161,6 +170,16 @@ export function createApp() {
         });
       }
     });
+  }
+
+  /**
+   * Real accounts, when Neon Auth is configured. Registered before /auth so the
+   * Cognito router cannot shadow it, and mounted conditionally so an environment
+   * without Neon Auth exposes no endpoint that could only fail.
+   */
+  if (neonAuthEnabled()) {
+    app.route('/join', joinRoute);
+    console.log('[glowdays] Neon Auth is configured: real sign-up is available at /join');
   }
 
   app.route('/media', mediaRoute);

@@ -433,7 +433,22 @@ export const api = {
       mode: string;
       youcam: 'live' | 'fixture';
       auth: 'dev' | 'demo' | 'cognito';
+      /** True when Neon Auth is configured and real sign-up is available. */
+      accounts?: boolean;
     }>('/health'),
+
+  /**
+   * Real accounts, backed by Neon Auth.
+   *
+   * Posted to our own origin, not to the auth service. The browser never sees the
+   * auth host: our API forwards the credentials server-side, which keeps the request
+   * same-origin and keeps a third-party domain out of the page's network surface.
+   */
+  signUp: (input: { email: string; password: string; name?: string }) =>
+    request<{ token: string; email: string }>('/join/sign-up', { method: 'POST', body: input }),
+
+  signIn: (input: { email: string; password: string }) =>
+    request<{ token: string; email: string }>('/join/sign-in', { method: 'POST', body: input }),
 
   /** Local sign-in. Only mounted when the API is in dev mode. */
   devToken: (email: string, authUid: string) =>

@@ -6,7 +6,9 @@ import { api, loadToken, subscribeToken } from './lib/api.ts';
 import { Capture } from './screens/Capture.tsx';
 import { Diary } from './screens/Diary.tsx';
 import { Me } from './screens/Me.tsx';
+import { Landing } from './screens/Landing.tsx';
 import { hasOnboarded, Onboarding } from './screens/Onboarding.tsx';
+import { SignUp } from './screens/SignUp.tsx';
 import { ScanDetail } from './screens/ScanDetail.tsx';
 import { SignIn } from './screens/SignIn.tsx';
 import { Today } from './screens/Today.tsx';
@@ -45,8 +47,13 @@ export function App() {
   if (token === null || session.isError) {
     return (
       <Routes>
+        {/* The landing page is the root for anyone not signed in. Previously the root
+            redirected straight to a sign-in form, which asked for an email address
+            before saying what the product does. */}
+        <Route path="/" element={<Landing />} />
         <Route path="/sign-in" element={<SignIn />} />
-        <Route path="*" element={<Navigate to="/sign-in" replace />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );
   }
@@ -104,7 +111,11 @@ export function App() {
           )
         }
       />
+      {/* Signed in, so the public routes send you onward rather than showing a form
+          you have already been through. */}
+      <Route path="/" element={<Navigate to="/today" replace />} />
       <Route path="/sign-in" element={<Navigate to="/today" replace />} />
+      <Route path="/sign-up" element={<Navigate to="/today" replace />} />
       <Route path="*" element={<Navigate to="/today" replace />} />
     </Routes>
   );

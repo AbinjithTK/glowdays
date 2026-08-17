@@ -94,6 +94,24 @@ const Schema = z
      */
     DEMO_ACCESS_CODE: z.string().min(12).optional(),
 
+    /**
+     * Neon Auth base URL, e.g.
+     * https://<endpoint>.neonauth.<region>.aws.neon.tech/<db>/auth
+     *
+     * Additive, and deliberately not tied to AUTH_MODE. When it is set, real
+     * email-and-password accounts become available alongside whatever mode is
+     * configured; when it is absent, nothing changes. Making it a fourth AUTH_MODE
+     * would have meant switching the one sign-in path that is verified working in
+     * order to add a second one, which is a bad trade for an app already in front of
+     * reviewers.
+     *
+     * Sessions are still ours. Neon Auth authenticates the person and we mint the
+     * token, because the JWT it issues expires in fifteen minutes and re-minting it
+     * on every request would put a third-party round trip in the hot path of an app
+     * that already waits on an image analyser.
+     */
+    NEON_AUTH_BASE_URL: z.string().url().optional(),
+
     /** Comma-separated allowed origins for the browser client. */
     CORS_ORIGINS: z.string().default('http://localhost:5173'),
 

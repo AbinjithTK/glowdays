@@ -98,7 +98,11 @@ export function onError(err: Error, c: Context): Response {
 }
 
 /** Paths that belong to the API. Anything else is the single-page app. */
-const API_PREFIXES = ['/v1', '/auth', '/dev', '/media', '/health', '/ready'];
+// `/join` and `/session` are here because the SPA catch-all serves index.html for
+// anything not recognised as an API path. A missing prefix would turn a genuine 404
+// on a sign-in endpoint into an HTML page, which the client would then fail to parse
+// with an error naming neither the route nor the real problem.
+const API_PREFIXES = ['/v1', '/auth', '/join', '/session', '/dev', '/media', '/health', '/ready'];
 
 export function isApiPath(pathname: string): boolean {
   return API_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));

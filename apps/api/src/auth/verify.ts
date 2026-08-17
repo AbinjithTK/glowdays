@@ -147,6 +147,32 @@ export async function mintDemoToken(input: { code: string; email: string }): Pro
 }
 
 /**
+ * Mint a session for someone Neon Auth has just authenticated.
+ *
+ * The subject is namespaced `neon:<uuid>`, alongside `demo:<email>`, so the two
+ * kinds of identity can coexist in `profile.auth_uid` without one ever resolving to
+ * the other's diary. It is the provider's user id rather than the email, so
+ * changing an email address does not orphan an account.
+ *
+ * The token is ours, not Neon's. Neon Auth's JWT expires in fifteen minutes, and
+ * using it directly would mean either signing people out mid-check-in or adding a
+ * cross-region round trip to every authenticated request.
+ */
+export async function mintNeonToken(input: {
+  userId: string;
+  email: string;
+  name?: string | null;
+}): Promise<string> {
+  const email = input.email.trim().toLowerCase();
+  return signLocalToken({
+    authUid: `neon:${input.userId}`,
+    email,
+    ...(input.name ? { name: input.name } : {}),
+    ttlSeconds: 60 * 60 * 24 * 30,
+  });
+}
+
+/**
  * Mint a local token. Only reachable when AUTH_MODE=dev, which config refuses
  * in production.
  */

@@ -12,7 +12,16 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ChevronLeft, Clock, Database, FlaskConical, LogOut, ShieldCheck, Trash2 } from 'lucide-react';
+import {
+  BookOpen,
+  ChevronLeft,
+  Clock,
+  Database,
+  FlaskConical,
+  LogOut,
+  ShieldCheck,
+  Trash2,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -101,6 +110,19 @@ export function Me() {
               title={`${trialCount} trial${trialCount === 1 ? '' : 's'}`}
               detail="What you have tested, and what held up"
               onClick={() => navigate('/trials')}
+            />
+            <Divider />
+            {/* The capture guidance lives in the tour and nowhere else, so it needs a
+                way back rather than being spent on a single first run. */}
+            <Row
+              icon={
+                <IconCircle tint="bg-lavender">
+                  <BookOpen className="text-violet size-4" strokeWidth={1.5} />
+                </IconCircle>
+              }
+              title="How to take a good check-in"
+              detail="Light, framing, and why a comparison gets refused"
+              onClick={() => navigate('/welcome')}
             />
           </Card>
         </Section>

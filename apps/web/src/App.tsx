@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { api, loadToken, subscribeToken } from './lib/api.ts';
 import { Capture } from './screens/Capture.tsx';
 import { Diary } from './screens/Diary.tsx';
 import { Me } from './screens/Me.tsx';
+import { hasOnboarded, Onboarding } from './screens/Onboarding.tsx';
 import { ScanDetail } from './screens/ScanDetail.tsx';
 import { SignIn } from './screens/SignIn.tsx';
 import { Today } from './screens/Today.tsx';
@@ -27,6 +28,9 @@ function useToken(): string | null {
 
 export function App() {
   const token = useToken();
+  // Local, so completing the tour re-renders immediately rather than waiting on a
+  // storage read that React does not observe.
+  const [onboarded, setOnboarded] = useState(false);
 
   // A token in session storage is not proof of a valid session, so the account
   // call is what actually decides. It also creates the profile row on first
@@ -60,6 +64,19 @@ export function App() {
     );
   }
 
+  /**
+   * First run gets the tour, rendered inline rather than as a redirect.
+   *
+   * A route guard on a stored flag is one wrong condition away from stranding every
+   * user outside the app, and this is the last thing standing between a new account
+   * and the product. Rendering it in place keeps the router uninvolved, and Skip is
+   * on every panel, so it can never become a wall.
+   */
+  const profileId = session.data?.profile.id;
+  if (profileId && !onboarded && !hasOnboarded(profileId)) {
+    return <Onboarding profileId={profileId} onDone={() => setOnboarded(true)} />;
+  }
+
   return (
     <Routes>
       <Route path="/today" element={<Today />} />
@@ -75,6 +92,18 @@ export function App() {
       <Route path="/trials/new" element={<NewTrial />} />
       <Route path="/trials/:id" element={<TrialDetail />} />
       <Route path="/what-changed" element={<WhatChanged />} />
+      {/* Re-openable. Panel two is the only place the capture guidance that decides
+          comparability is written down, and it is worth more than one reading. */}
+      <Route
+        path="/welcome"
+        element={
+          profileId ? (
+            <Onboarding profileId={profileId} onDone={() => setOnboarded(true)} revisiting />
+          ) : (
+            <Navigate to="/today" replace />
+          )
+        }
+      />
       <Route path="/sign-in" element={<Navigate to="/today" replace />} />
       <Route path="*" element={<Navigate to="/today" replace />} />
     </Routes>

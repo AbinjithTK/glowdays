@@ -174,3 +174,219 @@
     }
   }
 }
+
+/**
+ * Motion tokens.
+ *
+ * There was no easing scale here before, so this adds one rather than forking one.
+ * The curve is stronger than the CSS built-ins, which are too weak to read as
+ * deliberate at UI durations. The name avoids Tailwind's own `--ease-out` so nothing
+ * existing changes meaning.
+ *
+ * One curve, because one curve is what this screen needs: everything here is an
+ * entrance or a press, and entrances take `ease-out`. Never `ease-in` on UI - it
+ * starts slow, which delays the exact moment the user is watching. An `ease-in-out`
+ * partner belongs here the day something already on screen has to move to a new
+ * position, and not before, because an unused token is a token someone reaches for
+ * on the wrong animation.
+ *
+ * No spring here on purpose. Springs earn their cost when a gesture hands velocity
+ * to the animation; onboarding is advanced by a button, so there is no velocity to
+ * inherit and a tuned curve is the honest answer. A spring would only add bounce
+ * nobody asked for.
+ */
+@theme static {
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Keyframes live outside the layer: they are referenced from it, and a cascade
+   layer is the wrong place to hide a named animation. */
+@keyframes ob-panel-fwd {
+  from {
+    opacity: 0;
+    transform: translate3d(12px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes ob-panel-back {
+  from {
+    opacity: 0;
+    transform: translate3d(-12px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes ob-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes ob-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/**
+ * Press and panel motion.
+ *
+ * Everything here animates `transform` and `opacity` only, so no frame costs layout
+ * or paint. The reduced-motion block at the end is not a nicety: it is the same
+ * information delivered as a cross-fade, with every translate and every stagger
+ * delay removed.
+ */
+@layer utilities {
+  /**
+   * Press feedback. Driven by `data-pressed` from usePress, which sets it on
+   * pointerdown rather than on click, so the highlight lands before the action.
+   *
+   * 140ms in, and the release rides the same curve back. Scale only, because a
+   * control that dims on press reads as becoming disabled. Opacity is held back for
+   * the reduced-motion path, where transform is not available and no feedback at all
+   * would be the worse trade.
+   */
+  .press {
+    transition: transform 140ms var(--ease-out-strong);
+  }
+  .press[data-pressed] {
+    transform: scale(0.97);
+  }
+
+  /**
+   * Small controls need a larger ratio to register the same amount of press: 3% of a
+   * 24px chevron is under a pixel of travel.
+   */
+  .press-tight {
+    transition: transform 140ms var(--ease-out-strong);
+  }
+  .press-tight[data-pressed] {
+    transform: scale(0.88);
+  }
+
+  /**
+   * The progress dots go the other way. A 6px dot shrinking by 12% moves its edges
+   * less than a pixel, which is not feedback, it is the absence of feedback drawn to
+   * two decimal places. Small marks grow toward the finger instead - the hit area is
+   * 24px and stays put, so nothing reflows and the mark stays inside its own target.
+   */
+  .press-dot {
+    transition: transform 140ms var(--ease-out-strong);
+  }
+  .press-dot[data-pressed] {
+    transform: scale(1.25);
+  }
+
+  /**
+   * Panel change. Direction is the whole point: forward arrives from the right,
+   * back arrives from the left, so the four panels feel like one strip being walked
+   * rather than four unrelated screens. 12px, because this is a page of text that
+   * gets read, and a longer throw turns a transition into a wait.
+   */
+  .ob-panel {
+    animation: ob-panel-fwd 240ms var(--ease-out-strong) both;
+  }
+  .ob-panel[data-dir='back'] {
+    animation-name: ob-panel-back;
+  }
+
+  /**
+   * The four points, staggered 36ms apart at 180ms each: the last one has landed by
+   * 288ms. Stagger is decorative and it is reading material, so it stays inside the
+   * window where it reads as one group settling rather than as a queue.
+   */
+  .ob-stagger > * {
+    animation: ob-rise 180ms var(--ease-out-strong) both;
+  }
+  .ob-stagger > *:nth-child(2) {
+    animation-delay: 36ms;
+  }
+  .ob-stagger > *:nth-child(3) {
+    animation-delay: 72ms;
+  }
+  .ob-stagger > *:nth-child(4) {
+    animation-delay: 108ms;
+  }
+
+  /**
+   * Progress dots.
+   *
+   * Every slot is the same 20px wide whichever one is active, so nothing reflows and
+   * the state change is pure transform. The rose fill starts at scaleX(0.3), which
+   * is exactly the 6px of the idle dot, so it grows out of the dot it replaces
+   * instead of appearing over it. State is carried by shape as well as colour, and
+   * by aria-current for anyone not looking at either.
+   */
+  .ob-dot-fill {
+    transform: scaleX(0.3);
+    opacity: 0;
+    transition:
+      transform 260ms var(--ease-out-strong),
+      opacity 180ms var(--ease-out-strong);
+  }
+  .ob-dot-fill[data-on='true'] {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+
+  .ob-dot-idle {
+    transition: opacity 180ms var(--ease-out-strong);
+  }
+  .ob-dot-idle[data-on='false'] {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Same information, delivered as a cross-fade. No travel, no overshoot. */
+    .ob-panel,
+    .ob-panel[data-dir='back'],
+    .ob-stagger > * {
+      animation: ob-fade 160ms linear both;
+    }
+
+    /* Stagger delays go to zero: a delay that holds text back is a delay in
+       reading it, and it buys nothing once the movement is gone. */
+    .ob-stagger > *:nth-child(2),
+    .ob-stagger > *:nth-child(3),
+    .ob-stagger > *:nth-child(4) {
+      animation-delay: 0ms;
+    }
+
+    /* The fill still cross-fades, but at its final size - no growing pill. */
+    .ob-dot-fill,
+    .ob-dot-fill[data-on='true'] {
+      transform: scaleX(1);
+      transition: opacity 160ms linear;
+    }
+
+    /* Press feedback stays, because a control that does not acknowledge a press is
+       broken rather than calm. Transform is off the table, so it moves to opacity -
+       the one channel left, and still on pointerdown. */
+    .press,
+    .press-tight,
+    .press-dot {
+      transition: opacity 100ms linear;
+    }
+    .press[data-pressed],
+    .press-tight[data-pressed],
+    .press-dot[data-pressed] {
+      transform: none;
+      opacity: 0.72;
+    }
+  }
+}

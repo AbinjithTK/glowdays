@@ -1,169 +1,160 @@
-# Devpost submission — filled answers
+# Devpost submission, final text
 
-Project is created and saved as a **draft**: https://devpost.com/software/glowdays
-Submission page: https://youcam-api.devpost.com/ → My submission
+Draft is live and saved: https://devpost.com/software/glowdays
+Submit here: https://youcam-api.devpost.com/ then "My submission"
 
-Name, tagline, description, "Built with" tags and both links are **already saved on the
-project**. The five long-form answers below were submitted with the project; if the form
-shows any of them empty, paste from here.
+**Closes 17 Aug 2026 at 15:45 UTC, which is 11:45am ET.** Judging runs 18 to 31 August, so
+the app has to stay up for two more weeks.
 
-**Submission closes 17 Aug 2026, 15:45 UTC (11:45am ET).**
+Already saved on the project: name, tagline, the whole description, 18 "Built with" tags,
+the live link, the repo link, submitter type, app status, and the repo URL field.
+
+The four long answers below were sent twice. Both times the submit bounced on the two
+personal fields, so I cannot confirm they stuck. **Check the form. If any answer box is
+empty, paste it from here.**
 
 ---
 
-## Still needs you — three fields
+## Three things only you can fill
 
-| Field | Why I did not fill it |
+| Field | Why it is blank |
 | --- | --- |
-| **What is your country of residence?** | Personal data. I will not invent it. |
-| **What date did you start this project? (MM-DD-YY)** | I do not know it. The submission window opened 07-06-26; the `docs/` planning notes predate the code. Pick the date you actually started. |
-| **Demo video URL** (YouTube, public) | Does not exist yet. Required by the rules: 1–3 minutes, must show the app running and must name the YouCam API used. |
+| **Country of residence** | Yours to give, not mine to guess. |
+| **Start date, MM-DD-YY** | I do not know it. Submissions opened 07-06-26 and your planning notes came before the code. Use the date you actually started. |
+| **Demo video URL** | Does not exist yet. The rules want 1 to 3 minutes, public on YouTube, showing the app working and saying which YouCam API you used. |
 
-I also set **Submitter type = Individual** and **App Status = New** by inference. Change
-either if wrong.
+I set submitter type to **Individual** and app status to **New**. Change either if that is wrong.
 
----
+Also add the reviewer code from `access-code.txt` into the submission notes. Without it a
+judge has to create an account before they can see anything.
 
-## Repository URL
+## Links
 
-```
-https://github.com/AbinjithTK/glowdays
-```
-
-## Live app
-
-```
-https://9l79mtej8j.execute-api.us-east-1.amazonaws.com
-```
-
-Access code for reviewers is in `access-code.txt` (gitignored). Judges can also sign up
-with Google or an email in about ten seconds — no verification email.
-
-**Put the access code in the submission notes**, or judges will have to create an account
-to get in.
+Repo: `https://github.com/AbinjithTK/glowdays`
+Live app: `https://9l79mtej8j.execute-api.us-east-1.amazonaws.com`
 
 ---
 
-## Video shot list (1–3 min, in this order)
+## Video, nine shots, in this order
 
-The whole first-run path works. Shoot it on a phone, in one take if you can.
+Shoot it on a phone. Every one of these works right now.
 
-1. **Landing page** (5s) — the claim: it refuses to answer when evidence is thin.
-2. **Continue with Google** (10s) — one tap in. Say "Neon Auth, shared-mode Google".
-3. **Onboarding panel 2** (15s) — "same light, same spot". This is the panel that explains
-   why the product exists. Let the icons and the stagger land.
-4. **Capture** (25s) — show the diagnostics panel with the real resolution. Say the tier is
-   measured from the image bytes on the server, not claimed by the client. Take the photo.
-5. **Consent screen** (10s) — read the 30-day retention line aloud. This is a differentiator.
-6. **Readings** (25s) — the check-in detail: overall score, per-metric readings, the
-   analyser's detection masks, and the capture-conditions panel showing which signals were
-   measured and which were not.
-7. **Diary** (25s) — tap three stickers, attach a photo, save. Point out that the stickers
-   are confounders, not moods.
-8. **Trial verdict** (20s) — the confidence label, the prediction, and the "what else was
-   going on" panel.
-9. **Close** (10s) — "Every reading comes from Perfect Corp's YouCam AI Skin Analysis. The
-   product is the judgement about whether two of them can be compared at all."
+1. **Landing page**, 5 seconds. The line about refusing to answer when the evidence is thin.
+2. **Continue with Google**, 10 seconds. One tap in. Mention Neon Auth.
+3. **Onboarding, second panel**, 15 seconds. "Same light, same spot." This is the panel that
+   explains why the app exists at all.
+4. **Capture**, 25 seconds. Show the panel with the real camera resolution on it. Say the
+   server measures the tier from the image itself rather than trusting the phone. Take the shot.
+5. **Consent screen**, 10 seconds. Read the 30 day retention line out loud.
+6. **Readings**, 25 seconds. Overall score, the per metric readings, the analyser's detection
+   masks, and the panel showing which capture signals were measured and which were not.
+7. **Diary**, 25 seconds. Tap three stickers, attach a photo, save. Say the stickers are
+   things that could have caused a change, not moods.
+8. **Trial verdict**, 20 seconds. The confidence label, what you predicted, and the panel
+   listing what else was going on that week.
+9. **Close**, 10 seconds. "Every reading comes from Perfect Corp's YouCam AI Skin Analysis.
+   What I built is the judgement about whether two of them can be compared at all."
 
-Say the words "YouCam AI Skin Analysis" out loud at least once — the rules require the video
-to explain which API was used.
+Say "YouCam AI Skin Analysis" out loud at least once. The rules require the video to explain
+which API you used.
+
+Grab screenshots while you are in there: landing, onboarding, capture, readings, diary, trial
+verdict. Screenshots are required too.
 
 ---
 
-## Answer 1 — Text description of features, functionality and consumer/retail value
+## Answer 1: features, functionality, and value to a shopper or a retailer
 
-Glowdays is a private skin diary that answers one question other skin apps cannot: did the thing you tried actually do anything?
+Glowdays is a private skin diary that answers the one question other skin apps dodge: did the thing you tried actually do anything?
 
-The problem is that two photographs of the same face under different conditions produce different numbers from the same analyser. An app that reports every difference as a change is not measuring your skin, it is measuring your bathroom. Glowdays treats every comparison as a measurement with error bars, and it is willing to say no.
+Here is the problem. Photograph the same face twice in different light and the same analyser gives you different numbers. So an app that calls every difference a change is not measuring your skin. It is measuring your bathroom. Glowdays treats every comparison as a measurement, with the uncertainty that comes with one, and it is willing to tell you no.
 
-FEATURES
+WHAT IT DOES
 
-1. Measured check-ins. You photograph your face; readings come from Perfect Corp's YouCam AI Skin Analysis. The analysis tier (HD or SD) is decided from the short side measured out of the image bytes on the server, never from what the client claims.
+You photograph your face. The readings come from Perfect Corp's YouCam AI Skin Analysis. The server decides whether to run HD or SD by measuring the short side out of the image bytes itself, rather than trusting what the phone claims about its own camera.
 
-2. Confidence-gated comparisons. Before two check-ins are compared, five capture signals are graded: light level, light evenness, how much of the frame the face fills, and head yaw and pitch. Every comparison carries one of four confidence labels, and a comparison across mismatched tiers is refused outright rather than fudged. A refusal is a first-class answer with its own screen and explanation.
+It says no when it should. Before comparing two check-ins it grades five things about how the photos were taken: how bright the light was, how evenly it fell, how much of the frame your face filled, and how your head was turned and tilted. Every comparison arrives with one of four confidence labels. If the two photos came from different analysis tiers, it refuses outright instead of fudging it, and the refusal gets its own screen and its own explanation.
 
-3. It never invents a measurement. Most browsers cannot measure head angle or face distance. Sending zeros would tell the confidence engine it saw a perfectly square-on head at an identical distance, which is the strongest possible evidence manufactured out of its own absence. Unmeasured signals are excluded from grading and cap the label at a directional check, and the capture screen tells you which signals it managed to measure before you upload.
+It never makes a number up. Most phone browsers cannot measure your head angle or how far away you are. I could have sent zero. But zero means "perfectly square on, identical distance", which is the strongest possible evidence, invented out of nothing. So signals that were not measured get left out of the grading and cap the label at a directional check. The capture screen tells you which ones it managed to measure before you upload anything.
 
-4. Pre-registered trials. A trial names the single metric you expect a product to move, and for how long, before any evidence exists. Start one from a check-in that already happened and the server marks it exploratory, permanently, because a hypothesis formed after seeing the data is a different claim. One trial runs at a time, enforced by a database constraint, because two products started together produce a result you cannot attribute.
+You commit before you get to conclude. Starting a trial means naming one metric you think a product will move and how long you will give it, recorded before any evidence exists. Start one from a check-in you already took and the server marks it exploratory, permanently, because a guess made after seeing the data is a different kind of guess. Only one trial runs at a time, enforced by the database, because two products at once means you cannot tell which one did anything.
 
-5. A diary that logs confounders, not moods. Twenty-two stickers in three groups: what you noticed, what happened to you, what you did to your skin. The last two are confounders; observations never are, because a stinging face is part of what needs explaining rather than an explanation. Tap three stickers, optionally add an instant-print photo, done in seconds with no writing required. The trial verdict then reports how many days of the window carried a confounder and why each matters, and an empty window says so explicitly, because nothing logged is not the same as nothing happened.
+The diary tracks what else was going on. Twenty-two stickers in three groups: what you noticed, what happened to you, what you did to your skin. The last two count against a result. What you noticed never does, because "my skin stung" is the thing that needs explaining, not the explanation. Three taps and you are done, no typing needed. Add a photo and it sits on the page like an instant print. When a trial ends, the verdict tells you how many days of that window had something else going on and why each one matters. Log nothing and it says so, because an empty diary is not the same as a quiet month.
 
-6. Region-level readings. Everything the analyser returns is stored and shown, with the summary region marked as the one comparisons use.
+Nothing is ever green or red. A number going down is not a failure, so there is no green or red version of the change indicator to reach for. Only a sign, an arrow and a word.
 
-7. Direction is never colour. A metric moving down is not a failure. The delta component has no green or red variant to reach for: sign, arrow and word, always.
+WHO IT IS FOR
 
-CONSUMER AND RETAIL VALUE
+If you buy skincare: a straight answer to "did that do anything", and permission to stop paying for something that did not. Most routines are an unmeasured experiment costing a few hundred a year.
 
-For a shopper: a defensible answer to "did it work", and the confidence to stop paying for something that did nothing. The average skincare routine is an unmeasured experiment costing hundreds a year.
+If you sell it: real evidence per product, from people who agreed to give it, with the photo conditions attached to every reading. That is worth far more than a star rating, and it is what you would need to honestly say "this worked for people like you" instead of guessing from what someone bought before.
 
-For a brand or retailer: honest per-SKU efficacy evidence gathered from consenting users with capture conditions attached. That is worth considerably more than a five-star review, and it is the missing input for a genuine "worked for people like you" recommendation rather than one inferred from purchase history.
-
-For a clinic: a shared record between appointments, with refusals that stop a patient over-reading a change actually caused by a sunburn.
+If you run a clinic: something to look at together between appointments, and refusals that stop a patient reading too much into a change their holiday caused.
 
 PRIVACY
 
-Photographs live in private storage, are never public, never in a feed, and never used to train a model. A photo is sent for analysis only after explicit per-check-in consent, and the consent screen states the provider's 30-day retention before the camera is ever opened. Images are served through short-lived presigned URLs. Any check-in, or the whole account, can be deleted, and the deletion copy is explicit that it cannot reach into the provider's own storage.
+Photos go to private storage. Never public, never in a feed, never used to train anything. A photo is only sent for analysis after you agree to it, one check-in at a time, and the consent screen tells you the analyser keeps its own copy for up to 30 days before you ever open the camera. Images load through short lived signed links. You can delete a single check-in or the whole account, and the wording is honest that deleting here cannot reach into the provider's storage.
 
-VERIFIED
+PROOF
 
-The live pipeline was tested end to end against the deployed build using a face generated by YouCam's own text-to-image endpoint, so no real person's biometrics were involved: 8 concerns scored, 8 detection masks stored, overall 73.25, photo and masks resolving through presigned URLs, analysis complete in about nine seconds. The probe scripts in scripts/ reproduce it. 85 automated tests.
+I tested the whole pipeline against the deployed app using a face generated by YouCam's own text to image endpoint, so no real person's photo was involved. Eight concerns scored, eight detection masks stored, overall 73.25, photo and masks both loading through signed links, done in about nine seconds. The scripts that do it are in the repo. There are 85 tests.
 
 ---
 
-## Answer 2 — Was there a moment where the API surprised you?
+## Answer 2: did the API surprise you?
 
 Three times, and each one changed the product rather than just the code.
 
-The good surprise was how candid the documentation is. It states plainly that ui_score is adjusted upward from raw_score because users prefer positive assessments. I have never seen an API document its own motivational bias that clearly, and it is genuinely useful: it told me exactly which field a product like this must never touch. Glowdays stores and compares raw_score only, and the app says so on screen. An API that had quietly shipped only the flattering number would have made an honest product impossible to build on it.
+The good surprise was how honest the docs are. They say straight out that ui_score is nudged upward from raw_score because people prefer a positive assessment. I have never seen an API admit its own motivational bias that plainly, and it was genuinely useful. It told me exactly which field this app must never touch. Glowdays stores and compares raw_score only, and says so on screen. If the API had quietly shipped just the flattering number, an honest product would have been impossible to build on top of it.
 
-The expensive surprise was billing. I had assumed, and had written in a code comment, that a Skin Analysis call costs the same regardless of how many concerns you ask for. It does not: HD is banded at 12/16/20/22 units for 1-4/5-8/9-12/13-16 concerns. My code was requesting all sixteen while the UI surfaced eight, which is 22 units against 16 — on the 1,000-unit allocation that is 45 scans instead of 62. I had thrown away a quarter of my budget on a comment I never checked. It is now a typed concern set with an estimateUnits() function that prices a call before it is made.
+The expensive surprise was the billing. I had assumed a Skin Analysis call costs the same no matter how many concerns you ask for. I had even written that in a code comment. It is not true. HD is banded: 12, 16, 20 or 22 units for 1 to 4, 5 to 8, 9 to 12 or 13 to 16 concerns. My code was asking for all sixteen while the app only showed eight, so I was paying 22 units for 16 units of value. On a 1,000 unit allowance that is 45 scans instead of 62. I had thrown away a quarter of my budget because of a comment I never checked.
 
-Fixing that immediately exposed a second-order bug I would never have found otherwise. With only eight concerns requested, my local fixture's fake overall score became exactly the mean of the eight rows it returned — which is the one thing this UI must never imply, because the provider's all.score is a separate measurement and not an average of the concerns. A billing correction surfaced a fidelity bug in my own test double.
+Fixing it immediately turned up a second bug I would never have found any other way. Once I was only asking for eight concerns, the fake overall score in my local test fixture became exactly the average of the eight rows it returned. That is the one thing this app must never imply, because the provider's overall score is its own measurement and not an average of the concerns. So a billing fix exposed a fidelity bug in my own test double.
 
-The frustrating surprise was subcategory granularity. The docs specify hd_pore across forehead, nose, cheek and whole, and hd_wrinkle across seven facial areas, and my parser resolves all of them in three different nestings with tests behind it. But a live result requested with format json comes back with exactly one raw_score per concern and no subcategories — the regional breakdown lives in score_info.json inside the ZIP result instead. The reference says the JSON response and score_info "share semantics", which is true of the field meanings and not of the granularity. I only found out because I tested against the live API with a real face rather than trusting my fixtures, and I corrected the claim in my README rather than shipping a promise the build does not keep. Reading the ZIP is the outstanding work.
+The frustrating surprise was subcategories. The docs are specific: hd_pore comes back for forehead, nose, cheek and whole, and hd_wrinkle for seven areas of the face. My parser handles all of it, in three different possible shapes, with tests. But when you request the result as JSON you get exactly one score per concern and no subcategories at all. The regional breakdown lives in a separate file inside the ZIP result. The reference says the JSON response and that file share semantics, which is true about what the fields mean and not true about how much detail you get. I only found out because I ran a real face through the live API instead of trusting my fixtures. Rather than leave a promise in my README that the build does not keep, I corrected the README. Reading the ZIP is the work I did not get to.
 
-A smaller one worth passing on: the mask filenames put output between the action and the region, as in hd_pore_output_nose, as well as at the end, as in hd_texture_output. My matcher originally only stripped it from the end, which silently dropped a reading rather than failing. A test caught it. Silent data loss in a parser is much worse than a crash, and that naming inconsistency is a good candidate for a documentation note.
-
----
-
-## Answer 3 — Industries or use cases nobody is talking about
-
-Four, and the common thread is that everyone is aiming this at the moment of purchase when the harder and more valuable problem is what happens in the weeks afterwards.
-
-1. Efficacy substantiation for brands and regulators. Cosmetic claims are currently backed by small in-house panels under controlled lighting, or by star ratings that measure nothing. A Skin Analysis API plus enforced capture conditions and a confidence gate is the missing instrument for evidence gathered at consumer scale with the conditions attached. The commercially interesting part is not the score, it is the refusal: a claim supported only by comparisons the system itself declined to make is a claim you can identify and discard. That is auditable in a way a panel study is not, and advertising standards bodies would understand it immediately.
-
-2. Occupational skin health. Hand and face dermatitis is one of the most common occupational illnesses in food service, healthcare, cleaning and hairdressing, and it is tracked today by a supervisor's eye and a paper form. Objective redness and barrier readings on a phone, logged against shift patterns and glove or product changes, is a real compliance and insurance product. Nobody in beauty tech is looking at it because it is not beauty.
-
-3. Medication adherence and side-effect monitoring. Isotretinoin causes predictable dryness, topical steroids thin skin, and several oncology drugs cause rashes serious enough to interrupt treatment. Patients abandon courses because the side effects feel worse than they are, or push through ones that are genuinely dangerous. A diary that measures the side effect objectively between appointments, without claiming to diagnose anything, gives a clinician something better than recall. This needs the confidence gating more than any other use case, because here an over-claimed change has a clinical consequence.
-
-4. Post-procedure recovery in aesthetics clinics. After a peel, laser or injectable there is a normal redness and firmness curve, and the anxious question is always whether you are on it. A clinic that hands you a recovery track with objective daily readings replaces reassurance with evidence, reduces unnecessary follow-up appointments, and gets a per-practitioner outcome dataset it can actually learn from.
-
-One use case I would deliberately steer away from: anything that infers age, ethnicity or health status for targeting rather than for the user's own benefit. The same technology that supports these four supports profiling people by appearance, and the distinction is entirely in whether the reading belongs to the person or to whoever is selling to them.
+One smaller thing worth passing on. The mask filenames put the word output in the middle, like hd_pore_output_nose, as well as at the end, like hd_texture_output. My matcher originally only stripped it from the end, so it silently dropped a reading instead of failing. A test caught it. Quietly losing data is much worse than crashing, and that naming inconsistency would be worth a line in the docs.
 
 ---
 
-## Answer 4 — Where did you hit a wall technically?
+## Answer 3: use cases nobody is talking about
 
-Three walls. The two most instructive were both cases where the failure was invisible from the client's side.
+Four, and they have something in common. Everyone is pointing this technology at the moment someone decides to buy. The harder and more valuable problem is what happens in the weeks after.
 
-WALL 1: uploads failing with nothing in the logs.
+1. Backing up product claims, for brands and for regulators. Right now a cosmetic claim rests on a small in-house panel under controlled lighting, or on star ratings that measure nothing at all. Skin analysis plus enforced photo conditions plus a confidence gate is the missing instrument for gathering that evidence at consumer scale with the conditions attached to every reading. The commercially interesting part is not the score. It is the refusal. If a claim only survives because you counted comparisons the system itself declined to make, that is now something you can spot and throw out. A panel study cannot be audited that way. An advertising standards body would understand it instantly.
 
-On a phone, the capture button stuck on "Saving..." forever and CloudWatch showed only cold starts. My prime suspect was multipart form data through API Gateway, since the gateway base64-encodes binary bodies and a decode into a string rather than binary would corrupt the boundary. I tested that first and it was wrong: 40 KB and 3 MB multipart uploads both reached the handler cleanly.
+2. Skin at work. Hand and face dermatitis is one of the most common work related illnesses in kitchens, hospitals, cleaning and hairdressing. Today it gets tracked by a supervisor's eye and a paper form. Objective redness and barrier readings on a phone, logged against shift patterns and changes of glove or product, is a real compliance and insurance product. Nobody in beauty tech is looking at it, because it is not beauty.
 
-So I probed for the real boundary instead of theorising, and found that 4.25 MB of raw image is delivered while 4.5 MB comes back 413 from API Gateway itself. That is Lambda's 6 MB synchronous request payload limit after base64 inflates binary by a third. Critically, a gateway 413 never invokes the function, so nothing appears in your logs at all — the request simply vanishes.
+3. Staying on medication. Isotretinoin dries you out in a predictable way. Steroid creams thin skin. Several cancer drugs cause rashes bad enough to interrupt treatment. People abandon courses because the side effect feels worse than it is, or push through one that is genuinely dangerous. A diary that measures the side effect between appointments, without claiming to diagnose anything, gives a clinician something better than what the patient remembers. This is the use case that needs the confidence gating most, because here an overstated change has a clinical consequence.
 
-The fix is a client-side encode ladder that defends resolution before quality and holds the 1080-pixel short side that high-detail analysis requires, because dropping to 720 to save bytes would silently move a check-in into the standard tier, and the comparison engine refuses to compare across tiers. A byte-saving decision would have resurfaced weeks later as two check-ins mysteriously refusing to compare, with nothing to explain why. I also added a request deadline, since fetch has no default timeout and a request that is accepted and never answered leaves a button saying "Saving..." until the page is reloaded. And I added request logging, whose absence was the actual reason this cost a whole debugging cycle. The honest long-term fix is a presigned direct-to-S3 upload, which has no such ceiling.
+4. Recovery after a procedure. After a peel, laser or injectable there is a normal redness and firmness curve, and the anxious question is always whether you are on it. A clinic that sends you home with a recovery track and daily readings replaces reassurance with evidence, cuts down on unnecessary follow up appointments, and ends up with outcome data per practitioner that it can actually learn from.
 
-WALL 2: the app confidently telling every user something false.
+One direction I would steer away from. Anything that reads age, ethnicity or health from a face in order to target someone rather than help them. The same technology that makes those four work also makes profiling people by appearance work. The whole difference is whether the reading belongs to the person or to whoever is selling to them.
 
-My pre-flight check enforced the provider's documented rule that the face must fill more than 60% of the frame width, comparing against a faceRatio value measured in the browser. But faceRatio can only be measured where the browser exposes a face detector, which is a flagged Chromium feature and absent from iOS Safari entirely. Everywhere else my client sent 0 as a placeholder. Zero is below the threshold, so every single check-in was refused with "Move a little closer".
+---
 
-That message is worse than a generic error, because it is confidently wrong: it names a cause nothing ever observed and asks for a correction that cannot change the number. Someone following the instruction gets the identical refusal from two inches away.
+## Answer 4: where did you hit a wall?
 
-The fix was to apply the rule my confidence engine already followed and my admission gate did not: an unmeasured signal is not evidence. The client now sends which signals it actually measured, framing is only judged when framing was measured, and when it was not the scan is admitted, the comparison stays capped at a directional check, and if the face really is too small the provider says so itself — which I map to the same wording, but from something that actually looked. Six regression tests hold that invariant down.
+Three walls. The two worst ones were both cases where the failure was completely invisible from the outside.
 
-WALL 3: Lambda Function URLs returning 403 on everything.
+WALL ONE: uploads failing with nothing in the logs.
 
-A textbook-correct resource policy, AuthType NONE, no service control policies and no resource control policies, and every path still 403. A direct lambda invoke proved the function itself was fine, so rather than keep debugging a door that would not open I put an API Gateway HTTP API in front of it and moved on. That is the decision that later imposed the 4.25 MB ceiling in Wall 1, which is a fair trade I would make again but is worth knowing is connected.
+On a phone the capture button stuck on "Saving..." forever. CloudWatch showed nothing but cold starts. My first suspicion was multipart form data through API Gateway, because the gateway base64 encodes binary bodies and decoding that into a string instead of bytes would wreck the boundary. I tested that first and I was wrong. A 40 KB upload and a 3 MB upload both reached my handler cleanly.
 
-A smaller one, for anyone integrating Neon Auth: Better Auth requires an Origin header and refuses a request without one, and it does not care that the caller is a server rather than a browser. My backend-for-frontend forwarding pattern only worked once I sent an Origin explicitly, derived from configuration rather than forwarded from the client, since that value is what the CSRF check validates against and a caller must not get to choose it.
+So instead of theorising I went looking for the actual boundary. It turns out 4.25 MB of raw image gets through and 4.5 MB comes back as a 413 from API Gateway itself. That is Lambda's 6 MB request limit, once base64 has inflated the image by a third. The part that cost me the afternoon is that a 413 from the gateway never invokes the function, so nothing appears in your logs at all. The request just disappears.
+
+The fix is a ladder on the client that shrinks the photo to fit, and defends resolution before it sacrifices quality. It holds the 1080 pixel short side that HD analysis needs, because dropping to 720 to save bytes would silently move that check-in into the standard tier, and the comparison engine refuses to compare across tiers. Saving a few bytes today would have come back weeks later as two check-ins mysteriously refusing to compare, with nothing on screen to explain why. I also gave every request a deadline, because fetch has no timeout by default and a request that is accepted and never answered leaves a button saying "Saving..." until you reload the page. And I added request logging, whose absence was the real reason this took so long to find.
+
+WALL TWO: the app confidently telling every single user something false.
+
+I was enforcing the provider's documented rule that a face has to fill more than 60% of the frame, checked against a value measured in the browser. But that value can only be measured where the browser exposes a face detector, which is a flagged Chromium feature and does not exist in iOS Safari at all. Everywhere else my own client was sending zero as a placeholder. Zero is below 60%, so every check-in got refused with "Move a little closer".
+
+That is worse than a generic error, because it is confidently wrong. It names a cause nothing ever observed and asks for a fix that cannot change the number. Follow the instruction and you get the identical refusal from two inches away.
+
+The fix was applying a rule my own confidence engine already followed and my admission check did not: something nobody measured is not evidence. The client now says which signals it actually measured. Framing is only judged when framing was measured. When it was not, the photo goes through, the resulting comparison stays capped at a directional check, and if the face genuinely is too small the provider tells me so itself, which I show with the same wording, except now it comes from something that actually looked. Six tests keep it that way.
+
+WALL THREE: Lambda Function URLs returning 403 on everything.
+
+Correct resource policy, auth type set to none, no service control policies, no resource control policies, and still 403 on every path. Invoking the function directly proved the function was fine. Rather than keep pushing on a door that would not open, I put an API Gateway in front of it and moved on. That decision is what later gave me the 4.25 MB ceiling in wall one. Fair trade, and I would make it again, but the two are connected and it is worth knowing that.
+
+One small one for anyone wiring up Neon Auth. Better Auth requires an Origin header and refuses a request without one, and it does not care that the caller is a server rather than a browser. My server side forwarding only started working once I sent an Origin explicitly, taken from config rather than passed through from the client, because that value is exactly what the CSRF check is validating and a caller must not get to pick it.
